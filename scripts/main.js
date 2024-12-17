@@ -1,12 +1,40 @@
 // at start of foundry
-console.log("Hello World! This code runs immediately when the file is loaded.");
+import {FuBattleHud} from './app/FuBattleHud.js';
+const app = new FuBattleHud();
 
 // on main screen
 Hooks.on("init", function() {
-  console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
+  
 });
 
 // when world is loaded
-Hooks.on("ready", function() {
-  console.log("This code runs once core initialization is ready and game data is available.");
+Hooks.on("ready", async function() {
+    //CONFIG.debug.hooks = true;
+    if(game.combat?.active) {
+        await app.render(true);
+        app.setupCombatants(game.combat);
+    }
+});
+
+Hooks.on('createCombat', async (combat) => {
+    if (game.combat === combat) {
+        await app.render(true);
+        app.setupCombatants(game.combat);
+    }
+});
+
+Hooks.on('updateCombat', async (combat, updates) => {
+    if(updates.active) {
+        await app.render(true);
+    }
+});
+
+Hooks.on('deleteCombat', (combat) => {
+    app.render(false);
+    app.close();
+});
+
+// on Resize
+Hooks.on("canvasPan", function(){
+    app.autosize();
 });
