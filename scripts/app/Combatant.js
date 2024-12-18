@@ -28,35 +28,55 @@ export class Combatant {
     }
 
     get isEnemy(){
-        return this.actor?.type === "npc";
+        return (this.actor?.type === "npc" && this.rank?.value !== "companion");
+    }
+
+    get isCompanion(){
+        return (this.actor?.type === "npc" && this.rank?.value === "companion");
+    }
+
+    get isNPC(){
+        return (this.isEnemy || this.isCompanion);
     }
 
     get isAlly(){
-        return this.actor?.type !== "npc";
+        return (this.actor?.type !== "npc" && this.rank?.value !== "companion");
+    }
+
+    get rank(){
+        if(this.actor?.type === "npc")
+            return this.actor?.system?.rank
     }
 
     get containerId(){
         return this.isEnemy ? "fubh-foes" : "fubh-allies";
     }
 
+    get isGM(){
+        return game.user.isGM;
+    }
+
     get getModel(){
         return {
-            name: this.name,
+            name: this.combatant.name,
             img: this.img,
             isEnemy: this.isEnemy,
             isAlly: this.isAlly,
             resources: {
                 hp: {
                     value: this.actor.system.resources.hp.value,
-                    max: this.actor.system.resources.hp.max
+                    max: this.actor.system.resources.hp.max,
+                    percent: Math.round(this.actor.system.resources.hp.value / this.actor.system.resources.hp.max * 100),
                 },
                 mp: {
                     value: this.actor.system.resources.mp.value,
-                    max: this.actor.system.resources.mp.max
+                    max: this.actor.system.resources.mp.max,
+                    percent: this.isAlly ? Math.round(this.actor.system.resources.mp.value / this.actor.system.resources.mp.max * 100) : 0,
                 },
                 ip: {
-                    value: this.isEnemy ? 0 : this.actor.system.resources.ip.value,
-                    max: this.isEnemy ? 0 : this.actor.system.resources.ip.max
+                    value: this.isNPC ? 0 : this.actor.system.resources.ip.value,
+                    max: this.isNPC ? 0 : this.actor.system.resources.ip.max,
+                    percent: this.isAlly ? Math.round(this.actor.system.resources.ip.value / this.actor.system.resources.ip.max * 100) : 0,
                 },
             }
         };
@@ -68,17 +88,17 @@ export class Combatant {
     }
 
     async renderPortrait(){
+        if(this.actor.name === "Pikachu"){
+            console.log(`${this.actor.name} - ${this.actor.system.resources.hp.value} / ${this.actor.system.resources.hp.max}`);
+        }
+
+        if(this.isCompanion)
+            return;
+
         const container = document.getElementById(this.containerId);
         const portrait = await renderTemplate(`modules/${FuBattleHudSettings.MID}/templates/FUBH_portrait.hbs`, { ...this.getModel });
         this.element.innerHTML = portrait;
         container.appendChild(this.element);
-
-        if(this.actor.name === "Primordial Demon" || this.actor.name === "Jill"){
-            console.log(this.actor);
-            console.log(this.isExhausted);
-            console.log(`${this.actor.name} - ${this.actor.system.resources.hp.value} / ${this.actor.system.resources.hp.max}`);
-        }
-
         this.resolve(true);
     }
 

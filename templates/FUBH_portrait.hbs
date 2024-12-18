@@ -1,55 +1,19 @@
-<div style="
-    width:100%; height: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;">
-    <div style=" 
-        box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
-        {{#if isEnemy}}width:50%; margin:auto; {{else}}width:100%;{{/if}} height: 79%; 
-        background-repeat: no-repeat; 
-        {{#if isEnemy}}background-size: 100px;  {{else}}background-size: 250px; {{/if}}
-        {{#if isEnemy}}background-position: center; {{else}}background-position: top;{{/if}}
-        background-image: url('{{img}}')">
-        
-    </div>
-    <div style="width:100%; height: 21%;">
-        <div style="
-            text-shadow: #000000 1px 0 10px;
-            box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
-            text-align:center; 
-            font-size:12px;
-            color:white; 
-            font-weight:bold; 
-            {{#if isEnemy}} border: 1px solid;{{else}}border-left: 1px solid; border-right: 1px solid; border-top: 1px solid;{{/if}}
-            border-color: black; width:100%; 
-            height:{{#if isEnemy}}100%{{else}}34%{{/if}}; 
-            background: rgb(94,0,0);
-            background: linear-gradient(0deg, rgba(94,0,0,1) 0%, rgba(190,41,41,1) 35%, rgba(152,122,122,1) 100%);">
-            {{resources.hp.value}}/{{resources.hp.max}}
+<div class="portrait-wrapper">
+    <div class="portrait-name {{#if isEnemy}}enemy{{else}}ally{{/if}}">{{name}}</div>
+    <div class="portrait-img {{#if isEnemy}}enemy{{else}}ally{{/if}}" style="background-image: url('{{img}}')"></div>
+    <div style="portrait-resources-wrapper">
+        <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+            <div class="resource-hp" style="width:{{resources.hp.percent}}%;"></div>
+            <div class="resource-bar-text">{{resources.hp.value}}/{{resources.hp.max}}</div>
         </div>
-
         {{#if isAlly}}
-        <div style="
-            text-shadow: #000000 1px 0 10px;
-            text-align:center; 
-            font-size:12px;
-            color:white; 
-            font-weight:bold; 
-            box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
-            border-left: 1px solid; 
-            border-right: 1px solid; 
-            border-top: 1px solid; 
-            border-color: black; 
-            width:100%; 
-            height:33%; 
-            background: rgb(0,56,94);
-            background: linear-gradient(0deg, rgba(0,56,94,1) 0%, rgba(41,124,190,1) 35%, rgba(122,132,152,1) 100%);">
-            {{resources.mp.value}}/{{resources.mp.max}}
+        <div class="resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+            <div class="resource-bar resource-mp" style="width:{{resources.mp.percent}}%;"></div>
+            <div class="resource-bar-text">{{resources.mp.value}}/{{resources.mp.max}}</div>
         </div>
-
-        <div class="resource-ip" style="">
-            {{resources.ip.value}}/{{resources.ip.max}}
+        <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+            <div class="resource-ip" style="width:{{resources.ip.percent}}%;"></div>    
+            <div class="resource-bar-text">{{resources.ip.value}}/{{resources.ip.max}}</div>
         </div>
         {{/if}}
     </div>

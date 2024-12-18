@@ -21,9 +21,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static PARTS = {
-    FUBH_section_left: {template: `modules/${FuBattleHudSettings.MID}/templates/FUBH_section_left.hbs`,},
     FUBH_section_middle: {template: `modules/${FuBattleHudSettings.MID}/templates/FUBH_section_middle.hbs`,},
-    FUBH_section_right: {template: `modules/${FuBattleHudSettings.MID}/templates/FUBH_section_right.hbs`,}
   }
 
   /*
@@ -42,7 +40,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
         },
         {
             hook: "deleteCombatant",
-            fn: this.setupCombatant.bind(this),
+            fn: this.removeCombatant.bind(this),
         },
         {
             hook: "updateCombatant",
@@ -157,6 +155,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     this.portraits.push(new Combatant(combatant));
+    this.renderPortraits();
   }
 
   updateCombatant(combatant, updates = {}){
@@ -166,6 +165,18 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       this.setupCombatant(combatant);
     else
       this.getPortrait()?.update(combatant);
+    this.renderPortraits();
+  }
+
+  removeCombatant(combatant){
+    this.log(combatant, "remove combatant");
+    const deleted = this.getPortrait(combatant);
+    if(!deleted)
+      return;
+
+    const index = this.portraits.indexOf(deleted);
+    this.portraits.splice(index, 1);
+
     this.renderPortraits();
   }
 
