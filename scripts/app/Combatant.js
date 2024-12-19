@@ -170,14 +170,15 @@ export class Combatant {
             return;
 
         await this.registerAction();
-        if(this.getRemainingCombatants() <= 0)
-            this.combat.nextRound();
 
         const turnHelper = new CurrentTurnHelper();
         this.combat = await turnHelper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback
 
         const portraitHelper = new PortraitHelper();
         this.combat = await portraitHelper.removeAction(this.combat, this.combatant._id);
+
+        if(this.getRemainingCombatants() <= 0)
+            this.combat.nextRound();
     }
 
     async registerAction(){
@@ -201,7 +202,7 @@ export class Combatant {
         this.parent.forEach((p) => {
             if(p.isCompanion || p.isExhausted)
                 return;
-
+            
             remaining++;
         });
         return remaining;
@@ -216,6 +217,7 @@ export class Combatant {
             isEnemy: this.isEnemy,
             isAlly: this.isAlly,
             isMyOpponentTurn: this.myOpponentTurn,
+            isGM: this.isGM,
             actions: {
                 value: this.actions,
                 max: this.maxActions,

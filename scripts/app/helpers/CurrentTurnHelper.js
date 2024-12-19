@@ -30,8 +30,19 @@ export class CurrentTurnHelper {
         return combat;
     }
 
+    async setTurnOrder(combat, turn){
+        combat = await combat.unsetFlag("projectfu", "CurrentTurn");
+        combat = await combat.setFlag("projectfu", "CurrentTurn", turn);
+
+        return combat;
+    }
+
     getCurrentTurn(combat){
         return combat?.getFlag("projectfu", "CurrentTurn");
+    }
+
+    getFirstTurn(combat){
+        return combat?.getFlag("projectfu", "FirstTurn");
     }
 
     getSide(side){

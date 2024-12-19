@@ -190,8 +190,25 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if(game.combat.round > 0)
       this.showCombatTracker();
   }
-  _onNewCombatRound(combat){
-    this.portraits.forEach((p) => p.resetActions());
+  async _onNewCombatRound(combat){
+    if(!game.user.isGM)
+      return;
+
+    const portraitHelper = new PortraitHelper();
+    const turnHelper = new CurrentTurnHelper();
+    const data = portraitHelper.getPortraitsData(game.combat);
+    const turn = turnHelper.getFirstTurn(game.combat);
+
+    this.portraits.forEach((p) => {
+      if(data[p.combatant._id]){
+        data[p.combatant._id].actions = data[p.combatant._id].maxActions;
+      }
+    });
+
+    await portraitHelper.registerFlag(game.combat, data);
+    await turnHelper.setTurnOrder(game.combat, turn);
+
+    Hooks.call('fubhRefreshUI');
   }
   async _onActorUpdate(actor){
     const combatant = this.getCombatantFromActor(actor);
@@ -213,7 +230,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     combat.combatants.forEach(async (combatant) => await this.setupCombatant(combatant));
     this.setHooks();
     this.showContainer(true);
-    this.renderPortraits();
   }
 
   async setupCombatant(combatant){
@@ -223,12 +239,15 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
 
-    //register flag
     const helper = new PortraitHelper();
     const obj = new Combatant(combatant, this.portraits);
-    await helper.registerPortrait(game.combat,combatant._id, obj.maxActions, obj.maxActions);
-    obj.update(combatant);
 
+    if(game.user.isGM){
+      //register flag
+      await helper.registerPortrait(game.combat,combatant._id, obj.maxActions, obj.maxActions);
+    }
+
+    obj.update(combatant);
     this.portraits.push(obj);
   }
 
