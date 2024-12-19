@@ -1,0 +1,27 @@
+<div id="fubh-combat-tracker">
+    <div id="fubh-header" class="hidden">
+        <div id="fubh-foes">
+        </div>
+    </div>
+    <div id="fubh-footer" class="hidden">
+        <div id="fubh-buttons-container">
+            {{#if isGM}}
+
+            <div class="button green" data-tooltip="Next turn" data-action="next-turn">
+                <i class="fa-solid fa-angle-right"></i>
+            </div>
+
+            <div class="button green" data-tooltip="New round" data-action="new-round">
+                <i class="fa-solid fa-rotate-right"></i>
+            </div>
+
+            <div class="button red" data-tooltip="End combat" data-action="delete-combat">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+
+            {{/if}}
+            <div id="fubh-turn-order" class="container green"></div>
+        </div>
+        <div id="fubh-allies"></div>
+    </div>
+</div>

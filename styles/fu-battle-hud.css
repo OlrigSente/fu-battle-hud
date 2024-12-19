@@ -1,6 +1,71 @@
+/*
+ * UTILITIES
+*/
+#fu-battle-hud .ma-right-1{
+    margin-right:10px;
+}
+#fu-battle-hud .hidden{
+    display: none;
+}
+
+#fu-battle-hud .display{
+    display: block;
+}
+
+#fu-battle-hud .button:hover{
+    cursor: pointer;
+}
+
+#fu-battle-hud .blue{
+    background: rgb(43,62,122);
+    background: linear-gradient(43deg, rgba(43,62,122,1) 33%, rgba(80,107,168,1) 100%);
+}
+
+#fu-battle-hud .green{
+    background: rgb(55,133,109);
+    background: linear-gradient(43deg, rgba(55,133,109,1) 0%, rgba(79,175,46,1) 100%);
+}
+
+#fu-battle-hud .red{
+    background: rgb(172,39,39);
+    background: linear-gradient(43deg, rgba(172,39,39,1) 33%, rgba(175,46,111,1) 100%);
+}
+
+#fu-battle-hud .blue:hover{
+    background: rgb(27,74,89);
+    background: linear-gradient(43deg, rgba(27,74,89,1) 9%, rgba(63,187,205,1) 100%);
+}
+#fu-battle-hud .green:hover{
+    background: rgb(45,129,103);
+    background: linear-gradient(43deg, rgba(45,129,103,1) 0%, rgba(174,180,172,1) 100%);
+}
+#fu-battle-hud .red:hover{
+    background: rgb(129,45,45);
+    background: linear-gradient(43deg, rgba(129,45,45,1) 0%, rgba(180,174,172,1) 100%);
+}
+
+#fu-battle-hud div.button, #fu-battle-hud div.container{
+    border:2px white;
+    border-style: ridge;
+    border-radius: 10px;
+    
+    text-align: center;
+    color:white;
+    text-shadow: #000000 1px 0 2px;
+
+    margin:5px;
+}
+
+#fu-battle-hud .container{
+    padding-left:15px;
+    padding-right:15px;
+}
+/*
+ * MAIN
+ */
 #fu-battle-hud{
-    position: absolute;
     height:100%;
+    position: absolute;
     pointer-events: none;
 
     flex: 1;
@@ -10,7 +75,7 @@
     margin-left:10px;
 }
 
-#fubh-section-middle{
+#fubh-combat-tracker{
     margin-left:220px;
     margin-right: 300px;
     flex: 1;
@@ -18,14 +83,38 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
+/*
+ * COMBAT SETUP
+ */
+ #fubh-combat-setup .div.button{
+    padding:10px;
+ }
+#fubh-combat-setup{
+    pointer-events: all;
+    position:absolute;
+    margin:auto;
+
+    width: 30%;
+    top: 45%;
+    left:35%;
+
+    background-color: rgb(57, 96, 105);
+    padding: 20px;
+
+    border:2px white;
+    border-style: ridge;
+    border-radius: 30px;
+}
+
 /* Fabula Ultima Battle Hud Header
     Container for foes
 */
 #fubh-header {
     min-width:1000px;
     max-width: 80%;
-    height:200px;
-
+    height:150px;
+    padding: 5px;
     background-image: url('/modules/fu-battle-hud/assets/background.png');
     background-color: rgb(57, 96, 105);
     background-size: cover;
@@ -33,11 +122,10 @@
 
     align-self: center;
     pointer-events: all;
-    padding:10px;
 
     border-radius: 0px 0px 30px 30px;
     box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
-    border-bottom:4px groove rgb(30, 49, 49) ;
+    border-bottom:4px groove rgb(30, 49, 49);
 }
 
 #fubh-header #fubh-foes {
@@ -48,8 +136,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    
-    padding: 10px;
 }
 
 /* Fabula Ultima Battle Hud Footer
@@ -57,7 +143,7 @@
 */
 #fubh-footer {
     min-width:1000px;
-    height:400px;
+    height:370px;
     
     align-self: center;
     pointer-events: all;
@@ -86,8 +172,9 @@
     padding: 10px;
 }
 
-/* Character Portrait
-*/
+/* 
+ * Character Portrait
+ */
 
 /* the base element */
 .fubh-portrait {
@@ -111,29 +198,40 @@
     box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
     height: 79%; 
     background-repeat: no-repeat;
+
+    border-left: 2px;
+    border-right: 2px;
+    border-top: 2px;
+    border-bottom: 0px;
+    border-style: ridge;
 }
 
-.portrait-img:hover{
+.portrait-img.enemy:hover{
     cursor: pointer;
-    border:1px solid hsl(49, 100%, 50%); 
+    border-color: #be82a5 !important; 
+}
+
+.portrait-img.ally:hover{
+    cursor: pointer;
+    border-color: burlywood !important; 
 }
 
 .portrait-img.enemy{
-    width:100%; margin:auto;
-    background-size: 250px; 
+    width:60%; margin:auto;
+    background-size: 150px; 
     background-position: center;
+    border-color: rgb(170, 89, 136);
 }
 
 .portrait-img.ally{
     width:100%;
     background-size: 250px;
     background-position: top;
+    border-color: rgb(170, 130, 89);
 }
 
 /*contain all resources bar*/
-.portrait-resources-wrapper{
-    width:100%; height: 21%;
-}
+
 
 /* represent the box containing the resource bar*/
 .resource-bar-container{
@@ -143,12 +241,13 @@
     background-image: url('/modules/fu-battle-hud/assets/bar-texture.png');
     background-size: cover;
     width:100%;
+    margin-bottom: 2px;
 }
 .resource-bar-container.ally {
-    height:34%;
+    height:18px;
 }
 .resource-bar-container.enemy {
-    height:100%;
+    height:18px;
 }
 
 /* represent css shared by all resources bar*/
@@ -170,6 +269,12 @@
     height: 100%;
 }
 
+.resource-ap{
+    background: rgb(79,0,94);
+    background: linear-gradient(0deg, rgba(79,0,94,1) 0%, rgba(118,41,190,1) 35%, rgba(158,131,182,1) 100%);
+    height: 100%;
+}
+
 .resource-bar-text{
     text-shadow: #000000 1px 0 10px;
     text-align:center;
@@ -185,10 +290,10 @@
 
 /* portrait name*/
 .portrait-name{
-    border: 4px;
+    border: 2px;
     border-style: ridge;
     border-radius: 3px;
-    
+    margin-bottom: 2px;
     background-size: contain;
     background-color: rgb(59, 59, 59);
     background-image: url('/modules/fu-battle-hud/assets/bar-texture.png');
@@ -198,8 +303,7 @@
     text-align: center;
     font-weight: bold;
     
-    width:110%;
-    margin-left:-5%;
+    width:100%;
 }
 
 .portrait-name.ally{
@@ -210,4 +314,110 @@
 .portrait-name.enemy{
     border-color: rgb(170, 89, 136);
     background-color:rgb(92, 43, 104);
+}
+/*
+ * PORTRAIT BUTTONS
+ */
+
+.fubh-portrait-buttons{
+    position: absolute;
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    display:none;
+}
+
+.fubh-portrait-buttons.enemy{
+    margin-left:15px;
+    margin-top:-2px;
+}
+
+.fubh-portrait-buttons.ally{
+    margin-left:-20px;
+}
+
+.fubh-portrait-buttons .button{
+    font-size: 16px;
+    line-height: 25px;
+    height:25px;
+    width:25px;
+
+    border-radius: 5px !important;
+}
+
+.portrait-img:hover + .fubh-portrait-buttons, .fubh-portrait-buttons:hover{
+    display: block;
+}
+/*
+ * BUTTONS CONTAINER
+ */
+#fubh-buttons-container{
+    height:50px;
+    
+    position: absolute;
+    margin-top:-30px;
+
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+    padding: 10px;
+}
+
+#fubh-buttons-container .button, #fubh-buttons-container .container{
+    line-height: 30px;
+    height:30px;
+}
+
+#fubh-buttons-container .button{
+    width:30px;
+}
+
+/*
+ * EXHAUSTED
+ */
+
+.portrait-img .portrait-img-overlay{
+    position:relative;
+    width:100%;
+    height:100%;
+
+    display: none;
+}
+
+.portrait-img .portrait-img-overlay.exhausted{
+    display: block;
+    background: rgb(255, 255, 255);
+    background: radial-gradient(circle, rgba(100, 100, 100, 0.5) 0%, rgb(65, 69, 78) 100%);
+}
+
+.fubh-portrait-buttons div.button.exhausted{
+    background: rgb(221, 221, 221) !important;
+    background: linear-gradient(43deg, rgb(255, 255, 255) 33%, rgb(102, 102, 102) 100%) !important;
+
+    color:rgb(73, 73, 73) !important;
+    border-color: rgb(73, 73, 73) !important;
+
+    cursor: not-allowed !important;
+}
+
+.portrait-name.ally.exhausted, .portrait-name.enemy.exhausted{
+    border-color: rgb(185, 185, 185);
+    background-color:rgb(139, 139, 139);
+    color: rgb(185, 185, 185) !important;
+}
+
+.resource-hp.exhausted, .resource-mp.exhausted, .resource-ip.exhausted, .resource-ap.exhausted {
+    background: rgb(129,132,134);
+    background: linear-gradient(43deg, rgba(129,132,134,1) 9%, rgba(76,101,110,1) 50%, rgba(37,37,37,1) 100%);
+    color:rgb(73, 73, 73) !important;
+    height: 100%;
+}
+
+.portrait-img.ally.exhausted, .portrait-img.enemy.exhausted{
+    border-color: rgb(185, 185, 185) !important;
 }

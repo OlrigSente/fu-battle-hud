@@ -1,5 +1,8 @@
-import {FuBattleHudSettings} from "./FuBattleHudSettings.js";
+import {FubhConstants} from "./FubhConstants.js";
+import { CombatSetupScreen } from "./CombatSetupScreen.js";
+import { ButtonsContainer } from "./ButtonsContainer.js";
 import { Combatant } from "./Combatant.js";
+import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -7,11 +10,12 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(options = {}) {
     super(options);
     this.portraits = [];
-    this.showContainer(false);
+    this.combatSetupScreen = new CombatSetupScreen();
+    this.buttonsContainer = new ButtonsContainer();
   }
 
   static DEFAULT_OPTIONS = {
-    id: FuBattleHudSettings.MID,
+    id: FubhConstants.MID,
     position: {
       width: 8000,
     },
@@ -21,9 +25,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static PARTS = {
-    FUBH_section_middle: {template: `modules/${FuBattleHudSettings.MID}/templates/FUBH_section_middle.hbs`,},
+    FUBH_CombatSetup: {template: `modules/${FubhConstants.MID}/templates/FUBH_CombatSetup.hbs`,},
+    FUBH_CombatTracker: {template: `modules/${FubhConstants.MID}/templates/FUBH_CombatTracker.hbs`,},
   }
 
+  async _preparePartContext(partId, context) {
+    return { isGM: game.user.isGM};
+  }
+  
   /*
    * HOOKS
    */
@@ -66,6 +75,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
           hook: "updateActor",
           fn: this._onActorUpdate.bind(this),
         },
+        {
+          hook: "combatRound",
+          fn: this._onNewCombatRound.bind(this),
+        },
+        {
+          hook: "fabulaUltimaBattleHud",
+          fn: this._onRenderModule.bind(this),
+        },
     ];
     for (let hook of this.hooks) {
         hook.id = Hooks.on(hook.hook, hook.fn);
@@ -73,9 +90,9 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   removeHooks() {
-      for (let hook of this.hooks) {
-          Hooks.off(hook.hook, hook.id);
-      }
+    for (let hook of this.hooks) {
+        Hooks.off(hook.hook, hook.id);
+    }
   }
 
   /*
@@ -91,13 +108,13 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     container.setAttribute("style", "width:"+w_size+"px")
   }
 
-  emptyContainers(){
+  clearCombatantsUI(){
     document.getElementById("fubh-allies").innerHTML = "";
     document.getElementById("fubh-foes").innerHTML = "";
   }
 
   showContainer(show = true){
-    const container = document.getElementById(FuBattleHudSettings.MID);
+    const container = document.getElementById(FubhConstants.MID);
     if(!container)
       return;
 
@@ -107,6 +124,39 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       container.style.visibility = "hidden";
   }
 
+  showCombatTracker(value = true){
+    const header = document.getElementById(FubhConstants.HEADER);
+    const footer = document.getElementById(FubhConstants.FOOTER);
+    const setup = document.getElementById(FubhConstants.SETUP);
+
+    header.classList.toggle("hidden", !value);
+    footer.classList.toggle("hidden", !value);
+    setup.classList.toggle("hidden", value);
+
+    const helper = new CurrentTurnHelper();
+    const element = document.getElementById(FubhConstants.TURN);
+    const turn = helper.getCurrentTurn(game.combat);
+    element.innerHTML = turn;
+
+    this.hideSceneNavBar(true);
+    this.renderPortraits();
+  }
+
+  hideSceneNavBar(value = true){
+    if(value){
+      if (!document.getElementById("navigation").classList.contains("collapsed")) {
+        setTimeout(() => {
+            document.getElementById("nav-toggle").click();
+        }, 500);
+      }
+    }else{
+      if (document.getElementById("navigation").classList.contains("collapsed")) {
+        setTimeout(() => {
+            document.getElementById("nav-toggle").click();
+        }, 500);
+      }
+    }
+  }
   async close(...args) {
     this.showContainer(false);
     if (this.element[0]) 
@@ -114,6 +164,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     
     this._closed = true;
     this.removeHooks();
+    this.hideSceneNavBar(false);
     return super.close(...args);
   }
 
@@ -125,20 +176,32 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!portrait) return;
     portrait.element.classList.toggle("hovered", hover);
   }
-  _onCombatStart(combat){return;}
+  _onCombatStart(combat){
+    this.showCombatTracker();
+  }
   _onDeleteCombat(combat){return;}
   _onCombatTurn(combat, updates, update){return;}
   _onRenderCombatTracker(){return;}
+  _onRenderModule(){
+    this.portraits.forEach(async (p) => await p.renderPortrait());
+  }
+  _onNewCombatRound(combat){
+    this.portraits.forEach((p) => p.resetActions());
+  }
   _onActorUpdate(actor){
-    this.log("", "Actor update");
     const combatant = this.getCombatantFromActor(actor);
     this.updateCombatant(combatant);
   }
+  
   /*
    * Combatants
    */
+  initListener(){
+    this.combatSetupScreen.activateListeners();
+    this.buttonsContainer.activateListeners();
+  }
+
   setupCombatants(combat){
-    this.log(combat, "setup combat");
     this.portraits = [];
     combat.combatants.forEach((combatant) => this.setupCombatant(combatant));
     this.setHooks();
@@ -147,20 +210,17 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   setupCombatant(combatant){
-    this.log(combatant, "setup combatant");
     const portrait = this.getPortrait(combatant);
     if(portrait){
       this.updateCombatant(combatant);
       return;
     }
 
-    this.portraits.push(new Combatant(combatant));
+    this.portraits.push(new Combatant(combatant, this.portraits));
     this.renderPortraits();
   }
 
   updateCombatant(combatant, updates = {}){
-    this.log(combatant, "update combatant");
-
     if ("initiative" in updates)
       this.setupCombatant(combatant);
     else
@@ -169,7 +229,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   removeCombatant(combatant){
-    this.log(combatant, "remove combatant");
     const deleted = this.getPortrait(combatant);
     if(!deleted)
       return;
@@ -181,7 +240,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   renderPortraits(){
-    this.emptyContainers();
+    this.clearCombatantsUI();
     this.portraits.forEach((p) => p.renderPortrait());
   }
 
@@ -195,13 +254,5 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   getCombatantFromActor(actor){
     return game.combat.combatants.find((c) => c.combatant?.actor._id === actor?._id);
-  }
-  /*
-   * Utilities
-   */
-
-  log(obj, title=""){
-    console.log(`[FABULA ULTIMA BATTLE HUD][DEBUG] - ${title}`);
-    console.log(obj);
   }
 }

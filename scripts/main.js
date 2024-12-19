@@ -13,8 +13,11 @@ Hooks.on("ready", async function() {
     if(game.combat?.active) {
         await app.render(true);
         app.setupCombatants(game.combat);
-        app.renderPortraits();
+        app.initListener();
         app.autosize();
+
+        if(game.combat.round > 0)
+            app.showCombatTracker();
     }
 });
 
@@ -22,6 +25,7 @@ Hooks.on('createCombat', async (combat) => {
     if (game.combat === combat) {
         await app.render(true);
         app.setupCombatants(game.combat);
+        app.initListener();
         app.renderPortraits();
         app.autosize();
     }
