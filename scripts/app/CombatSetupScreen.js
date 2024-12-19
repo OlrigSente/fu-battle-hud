@@ -6,36 +6,48 @@ export class CombatSetupScreen {
     }
 
     activateListeners() {
-        const dialog = document.getElementById(FubhConstants.SETUP);
-        if(!dialog)
+        const element = document.getElementById(FubhConstants.SETUP);
+        if(!element)
             return;
 
-        dialog.querySelectorAll(".button").forEach((b) => {
-            b.addEventListener("click", (e) => {
-                const action = e.currentTarget.dataset.action;
-                switch (action) {
-                    case "start-combat":
-                        this.startCombat();
-                        break;
-                    case "delete-combat":
-                        this.deleteCombat();
-                        break;
-                }
-            });
+        element.querySelectorAll(".button").forEach((b) => {
+            b.addEventListener("click", async (e) => await this.genericListener(e));
         });
     }
 
-    startCombat(){
+    removeListeners(){
+        const element = document.getElementById(FubhConstants.SETUP);
+        if(!element)
+            return;
+
+        element.querySelectorAll(".button").forEach((b) => {
+            b.removeEventListener("click", async (e) => await this.genericListener(e));
+        });
+    }
+
+    async genericListener(event){
+        const action = event.currentTarget.dataset.action;
+        switch (action) {
+            case "start-combat":
+                this.startCombat();
+                break;
+            case "delete-combat":
+                this.deleteCombat();
+                break;
+        }
+    }
+
+    async startCombat(){
         if(!game.combat?.active)
             return;
-        game.combat.startCombat();
+        await game.combat?.startCombat();
         this.hideDialog();
     }
 
-    deleteCombat(){
+    async deleteCombat(){
         if(!game.combat?.active)
             return;
-        game.combat.endCombat();
+        await game.combat?.endCombat();
         this.hideDialog();
     }
 

@@ -41,7 +41,6 @@ Hooks.on('updateCombat', async (combat, updates) => {
 });
 
 Hooks.on('deleteCombat', (combat) => {
-    app.render(false);
     app.close();
 });
 

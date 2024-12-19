@@ -12,7 +12,7 @@ export class ButtonsContainer {
             return;
 
         element.querySelectorAll(".button").forEach((b) => {
-            b.addEventListener("click", (e) => this.genericListener(e));
+            b.addEventListener("click", async (e) => await this.genericListener(e));
         });
     }
 
@@ -48,10 +48,10 @@ export class ButtonsContainer {
         await game.combat.nextRound();
     }
 
-    deleteCombat(){
+    async deleteCombat(){
         if(!game.combat?.active)
             return;
-        game.combat.endCombat();
+        await game.combat.endCombat();
     }
 
     async nextTurn(){
@@ -60,6 +60,6 @@ export class ButtonsContainer {
         const isAlly = (current === helper.side.friendly.value);
 
         await helper.updateTurnOrder(game.combat, isAlly);
-        Hooks.call('fabulaUltimaBattleHud');
+        Hooks.call('fubhRefreshUI');
     }
 }

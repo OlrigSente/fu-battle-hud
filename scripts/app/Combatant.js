@@ -1,13 +1,13 @@
-import {FubhConstants} from "./FubhConstants.js";
+import { FubhConstants } from "./FubhConstants.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
+import { PortraitHelper } from "./helpers/PortraitHelper.js";
 
 export class Combatant {
     constructor(combatant, parent) {
         this.combatant = combatant;
-        this.combat = combatant.combat;
+        this.combat = this.combatant.combat;
         this.parent = parent;
 
-        this.actions = this.maxActions;
         this.pid = `${FubhConstants.MID}-${this.combatant._id}`;
         
         this.element = document.createElement("div");
@@ -16,11 +16,17 @@ export class Combatant {
         this.resolve = null;
         this.ready = new Promise((res) => (this.resolve = res));
 
-        this.initCombatant();
+        //this.initCombatant();
     }
 
     /* GETTERS */
+    get portraitID(){
+        return this.pid;
+    }
 
+    get name(){
+        return this.combatant.name;
+    }
     get actor() {
         return this.combatant?.actor;
     }
@@ -58,14 +64,19 @@ export class Combatant {
             return this.actor?.system?.rank
     }
 
+    get actions(){
+        const helper = new PortraitHelper();
+        const flag = helper.getPortraitData(this.combat, this.combatant._id);
+        if(flag?.actions)
+            return flag.actions;
+        else
+            return 0;
+    }
+
     get maxActions(){
         if(this.isAlly)
             return 1;
         return this.rank.replacedSoldiers;
-    }
-
-    get remainingActions(){
-        return this.actions;
     }
 
     get containerId(){
@@ -145,27 +156,28 @@ export class Combatant {
     }
 
     async resetActions(){
-        this.actions = this.maxActions;
         await this.unregisterActions();
         
         const helper = new CurrentTurnHelper();
         this.combat = await helper.updateTurnOrder(this.combat, this.isAlly, true); // update with rollback
-        this.renderAllPortraits();
+
+        const portraitHelper = new PortraitHelper();
+        this.combat = await portraitHelper.resetActions(this.combat, this.combatant._id);
     }
 
     async playAction(){
-        let value = this.actions - 1;
-        if(value < 0 || this.isExhausted || !this.myTurn)
+        if(this.isExhausted || !this.myTurn)
             return;
 
-        this.actions = value;
         await this.registerAction();
         if(this.getRemainingCombatants() <= 0)
             this.combat.nextRound();
 
-        const helper = new CurrentTurnHelper();
-        this.combat = await helper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback
-        this.renderAllPortraits();
+        const turnHelper = new CurrentTurnHelper();
+        this.combat = await turnHelper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback
+
+        const portraitHelper = new PortraitHelper();
+        this.combat = await portraitHelper.removeAction(this.combat, this.combatant._id);
     }
 
     async registerAction(){
@@ -174,7 +186,6 @@ export class Combatant {
         flag[game.combat.round].push(this.combatant._id);
         this.combat = await this.combat.unsetFlag("projectfu", "CombatantsTurnTaken");
         this.combat = await this.combat.setFlag("projectfu", "CombatantsTurnTaken", flag);
-
     }
 
     async unregisterActions(){
@@ -200,39 +211,48 @@ export class Combatant {
     get getModel(){
         return {
             pid: this.pid,
-            name: this.combatant.name,
+            name: this.name,
             img: this.img,
             isEnemy: this.isEnemy,
             isAlly: this.isAlly,
             isMyOpponentTurn: this.myOpponentTurn,
             actions: {
-                value: this.remainingActions,
+                value: this.actions,
                 max: this.maxActions,
-                percent: Math.round(this.remainingActions / this.maxActions * 100)
+                percent: this.getPercentValue(this.actions,this.maxActions)
             },
             isExhausted : this.isExhausted,
             resources: {
                 hp: {
                     value: this.actor.system.resources.hp.value,
                     max: this.actor.system.resources.hp.max,
-                    percent: Math.round(this.actor.system.resources.hp.value / this.actor.system.resources.hp.max * 100),
+                    percent: this.getPercentValue(this.actor.system.resources.hp.value,this.actor.system.resources.hp.max),
                 },
                 mp: {
                     value: this.actor.system.resources.mp.value,
                     max: this.actor.system.resources.mp.max,
-                    percent: this.isAlly ? Math.round(this.actor.system.resources.mp.value / this.actor.system.resources.mp.max * 100) : 0,
+                    percent: this.isAlly ? this.getPercentValue(this.actor.system.resources.mp.value,this.actor.system.resources.mp.max) : 0,
                 },
                 ip: {
                     value: this.isNPC ? 0 : this.actor.system.resources.ip.value,
                     max: this.isNPC ? 0 : this.actor.system.resources.ip.max,
-                    percent: this.isAlly ? Math.round(this.actor.system.resources.ip.value / this.actor.system.resources.ip.max * 100) : 0,
+                    percent: this.isAlly ? this.getPercentValue(this.actor.system.resources.ip.value,this.actor.system.resources.ip.max) : 0,
                 },
             }
         };
     }
 
+    getPercentValue(value,max){
+        if(!value || !max)
+            return 0;
+
+        return Math.round(value / max * 100)
+    }
+
     update(combatant){
         this.combatant = combatant;
+        this.combat = combatant.combat;
+        
         this.renderPortrait();
     }
 

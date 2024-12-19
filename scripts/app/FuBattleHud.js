@@ -3,6 +3,7 @@ import { CombatSetupScreen } from "./CombatSetupScreen.js";
 import { ButtonsContainer } from "./ButtonsContainer.js";
 import { Combatant } from "./Combatant.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
+import { PortraitHelper } from "./helpers/PortraitHelper.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -12,6 +13,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.portraits = [];
     this.combatSetupScreen = new CombatSetupScreen();
     this.buttonsContainer = new ButtonsContainer();
+    window.addEventListener("resize", this.autosize.bind(this));
   }
 
   static DEFAULT_OPTIONS = {
@@ -57,7 +59,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
         },
         {
             hook: "updateCombat",
-            fn: this._onCombatTurn.bind(this),
+            fn: this._onUpdateCombat.bind(this),
         },
         {
             hook: "deleteCombat",
@@ -80,9 +82,9 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
           fn: this._onNewCombatRound.bind(this),
         },
         {
-          hook: "fabulaUltimaBattleHud",
-          fn: this._onRenderModule.bind(this),
-        },
+          hook: "fubhRefreshUI",
+          fn: this._onRefreshUI.bind(this),
+        }
     ];
     for (let hook of this.hooks) {
         hook.id = Hooks.on(hook.hook, hook.fn);
@@ -179,20 +181,25 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   _onCombatStart(combat){
     this.showCombatTracker();
   }
-  _onDeleteCombat(combat){return;}
-  _onCombatTurn(combat, updates, update){return;}
-  _onRenderCombatTracker(){return;}
-  _onRenderModule(){
-    this.portraits.forEach(async (p) => await p.renderPortrait());
+  _onDeleteCombat(combat){
+  }
+  _onUpdateCombat(){
+    
+  }
+  _onRenderCombatTracker(){
+    if(game.combat.round > 0)
+      this.showCombatTracker();
   }
   _onNewCombatRound(combat){
     this.portraits.forEach((p) => p.resetActions());
   }
-  _onActorUpdate(actor){
+  async _onActorUpdate(actor){
     const combatant = this.getCombatantFromActor(actor);
-    this.updateCombatant(combatant);
+    await this.updateCombatant(combatant);
   }
-  
+  _onRefreshUI(data){
+    this.portraits.forEach(async (p) => await p.renderPortrait());
+  }
   /*
    * Combatants
    */
@@ -203,29 +210,33 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   setupCombatants(combat){
     this.portraits = [];
-    combat.combatants.forEach((combatant) => this.setupCombatant(combatant));
+    combat.combatants.forEach(async (combatant) => await this.setupCombatant(combatant));
     this.setHooks();
     this.showContainer(true);
     this.renderPortraits();
   }
 
-  setupCombatant(combatant){
+  async setupCombatant(combatant){
     const portrait = this.getPortrait(combatant);
     if(portrait){
-      this.updateCombatant(combatant);
+      await this.updateCombatant(combatant);
       return;
     }
 
-    this.portraits.push(new Combatant(combatant, this.portraits));
-    this.renderPortraits();
+    //register flag
+    const helper = new PortraitHelper();
+    const obj = new Combatant(combatant, this.portraits);
+    await helper.registerPortrait(game.combat,combatant._id, obj.maxActions, obj.maxActions);
+    obj.update(combatant);
+
+    this.portraits.push(obj);
   }
 
-  updateCombatant(combatant, updates = {}){
+  async updateCombatant(combatant, updates = {}){
     if ("initiative" in updates)
-      this.setupCombatant(combatant);
+      await this.setupCombatant(combatant);
     else
       this.getPortrait()?.update(combatant);
-    this.renderPortraits();
   }
 
   removeCombatant(combatant){
@@ -235,13 +246,11 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const index = this.portraits.indexOf(deleted);
     this.portraits.splice(index, 1);
-
-    this.renderPortraits();
   }
 
   renderPortraits(){
     this.clearCombatantsUI();
-    this.portraits.forEach((p) => p.renderPortrait());
+    this.portraits.forEach(async (p) => await p.renderPortrait());
   }
 
   getPortrait(combatant){
@@ -249,7 +258,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   getPortraitFromActor(actor){
-    const portrait = this.portraits.find((p) => p.combatant._id === actor_id);
+    return this.portraits.find((p) => p.combatant._id === actor._id);
   }
 
   getCombatantFromActor(actor){

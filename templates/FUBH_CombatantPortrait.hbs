@@ -2,7 +2,7 @@
     <div class="portrait-img {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy {{else}}ally{{/if}}" style="background-image: url('{{img}}')">
         <div class="portrait-img-overlay {{#if isExhausted}} exhausted {{/if}}"></div>
     </div>
-    <div class="fubh-portrait-buttons {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+    <div class="fubh-portrait-buttons {{#if isEnemy}}enemy{{else}}ally{{/if}}" style="visibility:{{#if isGM}}visible{{else}}hidden{{/if}}">
         <div class="button blue {{#if isExhausted}} exhausted {{else if isMyOpponentTurn }} exhausted {{/if}}" data-tooltip="{{#if isExhausted}}Exhausted {{else}}Play action{{/if}}" data-action="play-action">
             {{#if isExhausted}}
             <i class="fa-solid fa-xmark"></i>
