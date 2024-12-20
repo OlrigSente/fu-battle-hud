@@ -202,7 +202,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   _onDeleteCombat(combat) {
   }
   _onUpdateCombat() {
-
+    this.updateRoundCounter();
   }
   _onRenderCombatTracker() {
     if (game.combat.round > 0)
