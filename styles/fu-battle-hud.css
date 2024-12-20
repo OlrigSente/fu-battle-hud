@@ -1,6 +1,12 @@
 /*
  * UTILITIES
 */
+#fu-battle-hud .glow{
+    box-shadow:
+    0 0 50px #fff,            /* outer white */
+    -10px 0 80px #f0f,        /* outer left magenta */
+    10px 0 80px #0ff !important; 
+}
 #fu-battle-hud .ma-right-1{
     margin-right:10px;
 }
@@ -60,6 +66,7 @@
     padding-left:15px;
     padding-right:15px;
 }
+
 /*
  * MAIN
  */
@@ -85,6 +92,22 @@
 }
 
 /*
+ * IMPACT SCREEN
+ */
+
+#fubh-impact-screen {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("/modules/fu-battle-hud/assets/impact.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/*
  * COMBAT SETUP
  */
  #fubh-combat-setup .div.button{
@@ -95,9 +118,8 @@
     position:absolute;
     margin:auto;
 
-    width: 30%;
     top: 45%;
-    left:35%;
+    left:45%;
 
     background-color: rgb(57, 96, 105);
     padding: 20px;
@@ -107,11 +129,38 @@
     border-radius: 30px;
 }
 
+#fubh-combat-setup .button {
+    padding:10px;
+}
+
+#fubh-combat-setup .moveScreen {
+    width:25px;
+    padding:0px;
+    font-size:15px;
+
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    cursor: grab !important;
+
+    text-shadow: #000000 0px 0 0px !important;
+    color: rgb(60, 51, 85) !important;
+    background: rgb(221, 221, 221) !important;
+    background: linear-gradient(43deg, rgb(255, 255, 255) 33%, rgb(102, 102, 102) 100%) !important;
+}
+
+#fubh-setup-portraits{
+    font-style: italic;
+    color: white;
+    text-shadow: #000000 1px 0 10px;
+    padding:10px;
+}
+
 /* Fabula Ultima Battle Hud Header
     Container for foes
 */
 #fubh-header {
-    min-width:1000px;
+    
     max-width: 80%;
     height:150px;
     padding: 5px;
@@ -142,7 +191,7 @@
     Container for the allies and hotbar section
 */
 #fubh-footer {
-    min-width:1000px;
+    min-width:300px;
     height:370px;
     
     align-self: center;
@@ -161,7 +210,7 @@
     background-size: cover;
     background-position: center;
 
-    width:100%;
+    
     height:300px;
     
     flex: 1;
@@ -371,6 +420,10 @@
 #fubh-buttons-container .button, #fubh-buttons-container .container{
     line-height: 30px;
     height:30px;
+}
+
+#fubh-buttons-container .container{
+    width: 150px;
 }
 
 #fubh-buttons-container .button{

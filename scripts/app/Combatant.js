@@ -1,12 +1,15 @@
 import { FubhConstants } from "./FubhConstants.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
+import { PlaylistHelper } from "./helpers/PlaylistHelper.js";
 import { PortraitHelper } from "./helpers/PortraitHelper.js";
+import { SettingsHelper } from "./helpers/SettingsHelper.js";
 
 export class Combatant {
     constructor(combatant, parent) {
         this.combatant = combatant;
         this.combat = this.combatant.combat;
         this.parent = parent;
+        this.name = this.combatant.name;
 
         this.pid = `${FubhConstants.MID}-${this.combatant._id}`;
         
@@ -24,9 +27,6 @@ export class Combatant {
         return this.pid;
     }
 
-    get name(){
-        return this.combatant.name;
-    }
     get actor() {
         return this.combatant?.actor;
     }
@@ -79,6 +79,10 @@ export class Combatant {
         return this.rank.replacedSoldiers;
     }
 
+    get havePlayed(){
+        return (this.actions < this.maxActions);
+    }
+
     get containerId(){
         return this.isEnemy ? "fubh-foes" : "fubh-allies";
     }
@@ -116,7 +120,7 @@ export class Combatant {
         if(!this.element)
             return;
         
-        this.element.querySelectorAll(".button").forEach((b) => {
+        this.element.querySelectorAll(".eventListener").forEach((b) => {
             b.addEventListener("click", async (e) => await this.genericListener(e));
         });
     }
@@ -125,7 +129,7 @@ export class Combatant {
         if(!this.element)
             return;
         
-        this.element.querySelectorAll(".button").forEach((b) => {
+        this.element.querySelectorAll(".eventListener").forEach((b) => {
             b.removeEventListener("click", async (e) => await this.genericListener(e));
         });
     }
@@ -138,6 +142,9 @@ export class Combatant {
                 break;
             case "reset-actions":
                 await this.resetActions();
+                break;
+            case "open-character-sheet":
+                this.openCharacterSheet();
                 break;
         }
     }
@@ -155,9 +162,15 @@ export class Combatant {
         }
     }
 
+    openCharacterSheet(){
+        this.actor.sheet.render(true);
+    }
+
     async resetActions(){
+        if(this.actions === this.maxActions)
+            return;
+
         await this.unregisterActions();
-        
         const helper = new CurrentTurnHelper();
         this.combat = await helper.updateTurnOrder(this.combat, this.isAlly, true); // update with rollback
 
@@ -171,8 +184,10 @@ export class Combatant {
 
         await this.registerAction();
 
-        const turnHelper = new CurrentTurnHelper();
-        this.combat = await turnHelper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback
+        if(!this.sideIsEmpty()){
+            const turnHelper = new CurrentTurnHelper();
+            this.combat = await turnHelper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback
+        }
 
         const portraitHelper = new PortraitHelper();
         this.combat = await portraitHelper.removeAction(this.combat, this.combatant._id);
@@ -208,8 +223,17 @@ export class Combatant {
         return remaining;
     }
 
+    sideIsEmpty(){
+        const data = this.parent.filter((p) => p.isAlly === !this.isAlly && !p.isExhausted && !p.isCompanion);
+        if(!data)
+            return true;
+        return (data.length === 0);
+    }
+
     /* MODEL (for the portrait template) */
     get getModel(){
+        const settingsHelper = new SettingsHelper();
+
         return {
             pid: this.pid,
             name: this.name,
@@ -221,7 +245,8 @@ export class Combatant {
             actions: {
                 value: this.actions,
                 max: this.maxActions,
-                percent: this.getPercentValue(this.actions,this.maxActions)
+                percent: this.getPercentValue(this.actions,this.maxActions),
+                havePlayed: this.havePlayed
             },
             isExhausted : this.isExhausted,
             resources: {
@@ -240,6 +265,10 @@ export class Combatant {
                     max: this.isNPC ? 0 : this.actor.system.resources.ip.max,
                     percent: this.isAlly ? this.getPercentValue(this.actor.system.resources.ip.value,this.actor.system.resources.ip.max) : 0,
                 },
+            },
+            settings: {
+                enemyHpValueShow: settingsHelper.get(SettingsHelper.EnemyHpValueShow),
+                enemyHpBarShow: settingsHelper.get(SettingsHelper.EnemyHpBarShow),
             }
         };
     }

@@ -5,4 +5,6 @@ export class FubhConstants {
     static SETUP = "fubh-combat-setup";
     static MENU = "fubh-buttons-container";
     static TURN = "fubh-turn-order";
+    static ROUNDS = "fubh-round-counter";
+    static IMPACT = "fubh-impact-screen";
 }

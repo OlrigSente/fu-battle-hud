@@ -1,9 +1,22 @@
 <div class="portrait-wrapper">
-    <div class="portrait-img {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy {{else}}ally{{/if}}" style="background-image: url('{{img}}')">
+    <div class="
+        eventListener 
+        portrait-img 
+        {{#if isExhausted}}
+            exhausted 
+        {{/if}}
+        {{#if isEnemy}}
+            enemy 
+        {{else}}
+            ally 
+        {{/if}}" 
+        style="background-image: url('{{img}}')"
+        data-action="open-character-sheet">
+
         <div class="portrait-img-overlay {{#if isExhausted}} exhausted {{/if}}"></div>
     </div>
     <div class="fubh-portrait-buttons {{#if isEnemy}}enemy{{else}}ally{{/if}}" style="visibility:{{#if isGM}}visible{{else}}hidden{{/if}}">
-        <div class="button blue {{#if isExhausted}} exhausted {{else if isMyOpponentTurn }} exhausted {{/if}}" data-tooltip="{{#if isExhausted}}Exhausted {{else}}Play action{{/if}}" data-action="play-action">
+        <div class="eventListener button blue {{#if isExhausted}} exhausted {{else if isMyOpponentTurn }} exhausted {{/if}}" data-tooltip="{{#if isExhausted}}Exhausted {{else}}Play action{{/if}}" data-action="play-action">
             {{#if isExhausted}}
             <i class="fa-solid fa-xmark"></i>
             {{else if isMyOpponentTurn}}
@@ -12,15 +25,35 @@
             <i class="fa-solid fa-dice-d20"></i>
             {{/if}}
         </div>
-        <div class="button blue" data-tooltip="Reset all actions" data-action="reset-actions">
+        <div class="eventListener button {{#if actions.havePlayed}}blue{{else}}exhausted{{/if}}" data-tooltip="Reset all actions" data-action="reset-actions">
             <i class="fa-solid fa-rotate-left"></i>
         </div>
     </div>
     <div class="portrait-name {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy{{else}}ally{{/if}}">{{name}}</div>
     <div style="portrait-resources-wrapper">
-        <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
-            <div class="resource-hp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
-            <div class="resource-bar-text">{{resources.hp.value}}/{{resources.hp.max}}</div>
+        <div class="
+            resource-bar 
+            resource-bar-container 
+            {{#if isEnemy}}
+                enemy
+                {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}
+            {{else}}
+                ally
+            {{/if}}">
+            <div class="
+                resource-hp
+                {{#if isExhausted}}exhausted {{/if}}" 
+                style="width:{{resources.hp.percent}}%;">
+            </div>
+            <div class="resource-bar-text">
+                {{#if isEnemy}}
+                    {{#if settings.enemyHpValueShow}}
+                        {{resources.hp.value}}/{{resources.hp.max}}
+                    {{/if}}
+                {{else}}
+                    {{resources.hp.value}}/{{resources.hp.max}}
+                {{/if}}
+            </div>
         </div>
         {{#if isAlly}}
         <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
