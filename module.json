@@ -4,19 +4,34 @@
     "description": "A JRPG style battle HUD for the game Fabula Ultima",
     "authors": [
       {
-      "name": "OlrigKTV"
+        "name": "OlrigKTV",
+        "email": "olrig@krakentavern.com",
+        "url": "https://github.com/OlrigSente"
       }
     ],
-    "version": "1.0.0",
-    "compatibility": {
-      "minimum": "12",
-      "verified": "12"
-    },
     "esmodules": [
         "scripts/main.js"
     ],
     "styles": [
         "styles/fu-battle-hud.css"
     ],
-    "url": "https://github.com/OlrigSente/fu-battle-hud"
+    "relationships": {
+      "systems": [{
+        "id": "projectfu",
+        "type": "system",
+        "manifest": "https://github.com/League-of-Fabulous-Developers/FoundryVTT-Fabula-Ultima/releases/latest/download/system.json",
+        "compatibility": {
+          "verified": "2.4.6"
+        }
+      }],
+      "requires": []
+    },
+    "version": "1.0.0",
+    "compatibility": {
+      "minimum": "12",
+      "verified": "12"
+    },
+    "url": "https://github.com/OlrigSente/fu-battle-hud",
+    "manifest": "",
+    "download": ""
   }
