@@ -159,6 +159,12 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
   }
+
+  updateRoundCounter(){
+    const rounds = document.getElementById(FubhConstants.ROUNDS);
+    rounds.innerHTML = game.combat.round;
+  }
+
   async close(...args) {
     this.showContainer(false);
     if (this.element[0])
@@ -205,7 +211,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   async _onNewCombatRound(combat) {
     if (!game.user.isGM)
       return;
-
     const portraitHelper = new PortraitHelper();
     const turnHelper = new CurrentTurnHelper();
     const data = portraitHelper.getPortraitsData(game.combat);

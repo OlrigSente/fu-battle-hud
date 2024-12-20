@@ -24,8 +24,12 @@ Hooks.on("ready", async function() {
         app.initListener();
         app.autosize();
 
-        if(game.combat.round > 0)
+        if(game.combat.round > 0){
             app.showCombatTracker();
+            app.updateRoundCounter();
+            playlist.play();
+        }
+            
     }
 });
 

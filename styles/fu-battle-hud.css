@@ -62,11 +62,6 @@
     margin:5px;
 }
 
-#fu-battle-hud .container{
-    padding-left:15px;
-    padding-right:15px;
-}
-
 /*
  * MAIN
  */
@@ -92,25 +87,9 @@
 }
 
 /*
- * IMPACT SCREEN
- */
-
-#fubh-impact-screen {
-    position: absolute;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
-
-    background-image: url("/modules/fu-battle-hud/assets/impact.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-
-/*
  * COMBAT SETUP
  */
- #fubh-combat-setup .div.button{
+#fubh-combat-setup .div.button{
     padding:10px;
  }
 #fubh-combat-setup{
@@ -418,8 +397,14 @@
 }
 
 #fubh-buttons-container .button, #fubh-buttons-container .container{
-    line-height: 30px;
+    line-height: 28px;
     height:30px;
+}
+
+#fubh-round-counter {
+    width:35px !important;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #fubh-buttons-container .container{
