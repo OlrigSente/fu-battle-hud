@@ -1,27 +1,27 @@
-import {FubhConstants} from "../FubhConstants.js";
+import { FubhConstants } from "../FubhConstants.js";
+import { CombatantsTurnTakenHelper } from "./CombatantsTurnTakenHelper.js";
 
 export class PortraitHelper {
     constructor() { }
     static flagName = "Portraits";
 
     async registerPortrait(combat, name, action, maxActions){
-        if(!combat.flags[FubhConstants.MID])
-            combat = await this.registerFlag(combat, {});
+        const flag = this.getPortraitsData(combat) || {};
 
-        const flag = this.getPortraitsData(combat);
+        if(!flag[combat.round])
+            flag[combat.round] = {};
 
-        if(!flag[name]){
-            flag[name] = {};
-            flag[name].actions = action;
-            flag[name].maxActions = maxActions;
+        if(!flag[combat.round][name]){
+            flag[combat.round][name] = {};
+            flag[combat.round][name].actions = action;
+            flag[combat.round][name].maxActions = maxActions;
             
-            combat = await this.registerFlag(combat, flag);
+            combat = await this.set(combat, flag, "registerPortrait");
         }
-
         return combat;
     }
 
-    async registerFlag(combat, flag){
+    async set(combat, flag, context=""){
         combat = await combat.setFlag(FubhConstants.MID, PortraitHelper.flagName, flag);
         return combat;
     }
@@ -30,32 +30,59 @@ export class PortraitHelper {
         return combat?.getFlag(FubhConstants.MID, PortraitHelper.flagName);
     }
 
-    getPortraitData(combat,name){
+    getPortraitData(combat, name){
         const data = this.getPortraitsData(combat);
-        
-        if(!data[name])
+        if(!data)
+            return;
+
+        if(!data[combat.round])
+            return;
+
+        if(!data[combat.round][name])
             return;
         
-        return data[name];
+        return data[combat.round][name];
     }
 
     async removeAction(combat, name){
         const data = this.getPortraitsData(combat);
-        if(data[name]){
-            const value = data[name].actions - 1;
-            if(value >= 0)
-                data[name].actions = value;
+        if(data[combat.round][name]){
+            const value = data[combat.round][name].actions - 1;
+            if(value >= 0){
+                data[combat.round][name].actions = value;
+            }
         }
-        combat = await this.registerFlag(combat, data);
+        combat = await this.set(combat, data, "removeAction");
+        return combat;
+    }
+
+    async addAction(combat, name, prevRound = false){
+        const data = this.getPortraitsData(combat);
+        const round = (prevRound) ? combat.round - 1 : combat.round;
+
+        if(data[round][name]){
+            const value = data[round][name].actions + 1;
+            if(value <= data[round][name].maxActions)
+                data[round][name].actions = value;
+        }
+        combat = await this.set(combat, data, "addAction");
         return combat;
     }
 
     async resetActions(combat, name){
         const data = this.getPortraitsData(combat);
-        if(data[name])
-            data[name].actions = data[name].maxActions;
+        if(data[combat.round][name])
+            data[combat.round][name].actions = data[combat.round][name].maxActions;
 
-        combat = await this.registerFlag(combat, data);
+        combat = await this.set(combat, data, "resetActions");
         return combat;
+    }
+
+    async rollbackLastAction(combat, prevRound = false){
+        const turnTakenHelper = new CombatantsTurnTakenHelper();
+        const lastCombatant = turnTakenHelper.getLastCombatant(combat);
+
+        await this.addAction(combat, CombatantsTurnTakenHelper.rollback, prevRound);
+        return lastCombatant;
     }
 }

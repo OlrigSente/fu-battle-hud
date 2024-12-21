@@ -4,6 +4,7 @@ import { ButtonsContainer } from "./ButtonsContainer.js";
 import { Combatant } from "./Combatant.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
 import { PortraitHelper } from "./helpers/PortraitHelper.js";
+import { CombatantsTurnTakenHelper } from "./helpers/CombatantsTurnTakenHelper.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -62,6 +63,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
         fn: this._onUpdateCombat.bind(this),
       },
       {
+        hook: "combatTurn",
+        fn: this._onTurnChange.bind(this),
+      },
+      {
+        hook: "combatRound",
+        fn: this._onNewCombatRound.bind(this),
+      },
+      {
         hook: "deleteCombat",
         fn: this._onDeleteCombat.bind(this),
       },
@@ -76,10 +85,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       {
         hook: "updateActor",
         fn: this._onActorUpdate.bind(this),
-      },
-      {
-        hook: "combatRound",
-        fn: this._onNewCombatRound.bind(this),
       },
       {
         hook: "fubhRefreshUI",
@@ -141,7 +146,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     element.innerHTML = turn;
 
     this.hideSceneNavBar(true);
-    this.renderPortraits();
   }
 
   hideSceneNavBar(value = true) {
@@ -163,6 +167,11 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   updateRoundCounter(){
     const rounds = document.getElementById(FubhConstants.ROUNDS);
     rounds.innerHTML = game.combat.round;
+  }
+
+  refreshUI(){
+    this.portraits.forEach(async (p) => await p.renderPortrait());
+    this.updateRoundCounter();
   }
 
   async close(...args) {
@@ -196,34 +205,57 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!portrait) return;
     portrait.element.classList.toggle("glow", hover);
   }
-  _onCombatStart(combat) {
+  async _onCombatStart(combat) {
+    await game.combat.nextRound();
+
     this.showCombatTracker();
+    if(game.combat.current.turn === 0)
+      game.combat.current.turn = 1;
   }
   _onDeleteCombat(combat) {
   }
   _onUpdateCombat() {
     this.updateRoundCounter();
   }
-  _onRenderCombatTracker() {
-    if (game.combat.round > 0)
-      this.showCombatTracker();
+
+  async _onTurnChange(combat, data, turn){
+    if(turn.direction === -1){
+      const portraitHelper = new PortraitHelper();
+      CombatantsTurnTakenHelper.rollback = await portraitHelper.rollbackLastAction(combat);
+    }
+    Hooks.call('fubhRefreshUI');
   }
-  async _onNewCombatRound(combat) {
+  async _onNewCombatRound(combat, combatData, turnData) {
     if (!game.user.isGM)
       return;
+
     const portraitHelper = new PortraitHelper();
     const turnHelper = new CurrentTurnHelper();
     const data = portraitHelper.getPortraitsData(game.combat);
     const turn = turnHelper.getFirstTurn(game.combat);
+    const round = game.combat.round + 1;
+
+    if(turnData.direction === -1){
+      CombatantsTurnTakenHelper.rollback = await portraitHelper.rollbackLastAction(combat, true);
+      this.showCombatTracker(false);
+      return;
+    }
+
+    if(!data[round] && data[round - 1]){
+      data[round] = {};
+    }
 
     this.portraits.forEach((p) => {
-      if (data[p.combatant._id]) {
-        data[p.combatant._id].actions = data[p.combatant._id].maxActions;
-      }
+      if(!data[round][p.combatant._id])
+        data[round][p.combatant._id] = {};
+
+      data[round][p.combatant._id].actions = p.maxActions;
+      data[round][p.combatant._id].maxActions = p.maxActions;
     });
 
-    await portraitHelper.registerFlag(game.combat, data);
+    await portraitHelper.set(game.combat, data,"_onNewCombatRound");
     await turnHelper.setTurnOrder(game.combat, turn);
+    game.combat.current.round = round;
 
     Hooks.call('fubhRefreshUI');
   }
@@ -231,8 +263,13 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const combatant = this.getCombatantFromActor(actor);
     await this.updateCombatant(combatant);
   }
+  _onRenderCombatTracker() {
+    if (game.combat.round > 0)
+      this.showCombatTracker();
+    Hooks.call('fubhRefreshUI');
+  }
   _onRefreshUI(data) {
-    this.portraits.forEach(async (p) => await p.renderPortrait());
+    this.renderPortraits();
   }
 
   /*
@@ -261,7 +298,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       await helper.registerPortrait(game.combat, combatant._id, obj.maxActions, obj.maxActions);
     }
 
-    obj.update(combatant);
+    await obj.update(combatant);
     this.portraits.push(obj);
   }
 
@@ -269,7 +306,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if ("initiative" in updates)
       await this.setupCombatant(combatant);
     else
-      this.getPortrait()?.update(combatant);
+      await this.getPortrait(combatant)?.update(combatant);
   }
 
   removeCombatant(combatant) {

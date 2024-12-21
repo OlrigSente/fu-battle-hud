@@ -29,7 +29,6 @@ Hooks.on("ready", async function() {
             app.updateRoundCounter();
             playlist.play();
         }
-            
     }
 });
 
