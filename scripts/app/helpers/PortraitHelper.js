@@ -14,17 +14,40 @@ export class PortraitHelper {
 
     async registerPortrait(combat, name, action, maxActions){
         const flag = this.getPortraitsData(combat) || {};
-
-        if(!flag[combat.round])
-            flag[combat.round] = {};
-
-        if(!flag[combat.round][name]){
-            flag[combat.round][name] = {};
-            flag[combat.round][name].actions = action;
-            flag[combat.round][name].maxActions = maxActions;
-            
-            combat = await this.set(combat, flag, "registerPortrait");
+        for(let round = 0; round<=combat.round; round++){
+            if(!flag[round])
+                flag[round] = {};
+    
+            if(!flag[round][name]){
+                flag[round][name] = {};
+                flag[round][name].actions = action;
+                flag[round][name].maxActions = maxActions;
+            }
         }
+        
+        combat = await this.set(combat, flag, `registerPortrait(${name})`);
+        return combat;
+    }
+
+    async unregisterPortrait(combat, name){
+        const flag = this.getPortraitsData(combat) || {};
+        await this.unset(combat, flag, `registerPortrait(${name})`);
+
+        for(let round = 0; round<=combat.round; round++){
+            if(!flag[round])
+                flag[round] = {};
+
+            if(flag[round][name]){
+                delete flag[round][name];
+            }
+        }
+
+        combat = await this.set(combat, flag, `registerPortrait(${name})`);
+        return combat;
+    }
+
+    async unset(combat, flag, context=""){
+        combat = await combat.unsetFlag(FubhConstants.MID, PortraitHelper.flagName, flag);
         return combat;
     }
 

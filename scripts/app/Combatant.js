@@ -180,12 +180,12 @@ export class Combatant {
         if(this.isExhausted || !this.myTurn)
             return;
 
-        const turnTakenHelper = new CombatantsTurnTakenHelper();
+        const combatantTurnTakenHelper = new CombatantsTurnTakenHelper();
         const currentTurnhelper = new CurrentTurnHelper();
         const portraitHelper = new PortraitHelper();
 
         PortraitHelper.PREVENT_COMBAT_UPDATE = true;
-        this.combat = await turnTakenHelper.addTurn(this.combat, this.combatant);
+        this.combat = await combatantTurnTakenHelper.addTurn(this.combat, this.combatant);
         PortraitHelper.PREVENT_COMBAT_UPDATE = false;
 
         if(!this.sideIsEmpty())

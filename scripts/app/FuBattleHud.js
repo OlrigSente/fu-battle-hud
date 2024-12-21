@@ -52,7 +52,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       },
       {
         hook: "deleteCombatant",
-        fn: this.removeCombatant.bind(this),
+        fn: this._onRemoveCombatant.bind(this),
       },
       {
         hook: "updateCombatant",
@@ -223,14 +223,21 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   _onDeleteCombat(combat) {
   }
   async _onUpdateCombat(combat,data) {
+    if(data.flags?.projectfu?.CombatantsTurnTaken){
+      const portraitHelper = new PortraitHelper();
+      const turns = data.flags.projectfu.CombatantsTurnTaken[combat.round];
+    }
     if(data.flags?.projectfu?.CombatantsTurnTaken && !PortraitHelper.PREVENT_COMBAT_UPDATE){
       const portraitHelper = new PortraitHelper();
       const turns = data.flags.projectfu.CombatantsTurnTaken[combat.round];
-      const combatant_id = turns[turns.length - 1];
 
-      await portraitHelper.removeAction(combat, combatant_id);
+      if(turns){
+        const combatant_id = turns[turns.length - 1];
+        await portraitHelper.removeAction(combat, combatant_id);
+      }
     }
     this.updateRoundCounter();
+    this.refreshUI();
   }
 
   _onPreUpdateCombat(combat,data,turn){
@@ -255,6 +262,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     Hooks.call('fubhRefreshUI');
   }
+
   async _onNewCombatRound(combat, combatData, turnData) {
     if (!game.user.isGM)
       return;
@@ -289,6 +297,18 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     Hooks.call('fubhRefreshUI');
   }
+
+  async _onRemoveCombatant(combatant) {
+    const portraitHelper = new PortraitHelper();
+    const deleted = this.getPortrait(combatant);
+    if (!deleted)
+      return;
+
+    await portraitHelper.unregisterPortrait(deleted.combat, deleted.combatant._id);
+    const index = this.portraits.indexOf(deleted);
+    this.portraits.splice(index, 1);
+  }
+
   async _onActorUpdate(actor) {
     const combatant = this.getCombatantFromActor(actor);
     await this.updateCombatant(combatant);
@@ -332,6 +352,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     await obj.update(combatant);
     this.portraits.push(obj);
+    this.refreshUI();
   }
 
   async updateCombatant(combatant, updates = {}) {
@@ -339,15 +360,6 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       await this.setupCombatant(combatant);
     else
       await this.getPortrait(combatant)?.update(combatant);
-  }
-
-  removeCombatant(combatant) {
-    const deleted = this.getPortrait(combatant);
-    if (!deleted)
-      return;
-
-    const index = this.portraits.indexOf(deleted);
-    this.portraits.splice(index, 1);
   }
 
   renderPortraits() {
