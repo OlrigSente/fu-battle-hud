@@ -60,7 +60,11 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       },
       {
         hook: "updateCombat",
-        fn: this._onUpdateCombat.bind(this),
+        fn: this._onUpdateCombat.bind(this), 
+      },
+      {
+        hook: "preUpdateCombat",
+        fn: this._onPreUpdateCombat.bind(this), 
       },
       {
         hook: "combatTurn",
@@ -85,6 +89,10 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       {
         hook: "updateActor",
         fn: this._onActorUpdate.bind(this),
+      },
+      {
+        hook: "updateToken",
+        fn: this._onTokenUpdate.bind(this),
       },
       {
         hook: "fubhRefreshUI",
@@ -170,7 +178,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   refreshUI(){
-    this.portraits.forEach(async (p) => await p.renderPortrait());
+    this.renderPortraits();
     this.updateRoundCounter();
   }
 
@@ -214,8 +222,23 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
   _onDeleteCombat(combat) {
   }
-  _onUpdateCombat() {
+  _onUpdateCombat(combat,data,turn) {
     this.updateRoundCounter();
+  }
+
+  _onPreUpdateCombat(combat,data,turn){
+    if(turn.direction && turn.direction == -1 && PortraitHelper.ROLLBACK.hasRollback){
+      const turn = (PortraitHelper.ROLLBACK.actions -1 < 0) ? 0 : PortraitHelper.ROLLBACK.actions -1;
+            
+      PortraitHelper.ROLLBACK.actions = game.combat.combatants.length;
+      PortraitHelper.ROLLBACK.hasRollback = false;
+      PortraitHelper.ROLLBACK.roundTarget = -1;
+
+      if(!turn)
+        return;
+
+      data.turn = turn;
+    }
   }
 
   async _onTurnChange(combat, data, turn){
@@ -268,14 +291,16 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       this.showCombatTracker();
     Hooks.call('fubhRefreshUI');
   }
-  _onRefreshUI(data) {
-    this.renderPortraits();
+  _onTokenUpdate(){
+    this.refreshUI();
+  }
+  _onRefreshUI() {
+    this.refreshUI();
   }
 
   /*
    * Combatants
    */
-
   setupCombatants(combat) {
     this.portraits = [];
     combat.combatants.forEach(async (combatant) => await this.setupCombatant(combatant));

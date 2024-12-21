@@ -12,9 +12,6 @@
             <i class="fa-solid fa-dice-d20"></i>
             {{/if}}
         </div>
-        <div class="eventListener button {{#if actions.havePlayed}}blue{{else}}exhausted{{/if}}" data-tooltip="Reset all actions" data-action="reset-actions">
-            <i class="fa-solid fa-rotate-left"></i>
-        </div>
     </div>
     <div class="portrait-name {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy{{else}}ally{{/if}}">{{name}}</div>
     <div style="portrait-resources-wrapper">

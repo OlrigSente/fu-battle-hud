@@ -4,6 +4,11 @@ import { CombatantsTurnTakenHelper } from "./CombatantsTurnTakenHelper.js";
 export class PortraitHelper {
     constructor() { }
     static flagName = "Portraits";
+    static ROLLBACK = {
+        hasRollback: false,
+        roundTarget: -1,
+        actions:0
+    };
 
     async registerPortrait(combat, name, action, maxActions){
         const flag = this.getPortraitsData(combat) || {};
@@ -82,7 +87,35 @@ export class PortraitHelper {
         const turnTakenHelper = new CombatantsTurnTakenHelper();
         const lastCombatant = turnTakenHelper.getLastCombatant(combat);
 
+        if(prevRound){
+            PortraitHelper.ROLLBACK.actions = this.countActionsSpent(combat, combat.round - 1);
+            PortraitHelper.ROLLBACK.hasRollback = true;
+            PortraitHelper.ROLLBACK.roundTarget = combat.round - 1;
+        }
+            
+
         await this.addAction(combat, CombatantsTurnTakenHelper.rollback, prevRound);
         return lastCombatant;
+    }
+
+    countActionsSpent(combat,round){
+        const data = this.getPortraitsData(combat);
+        if(!data)
+            return 0;
+
+        if(!data[round])
+            return 0;
+
+        let maxActions = 0;
+        let actions = 0;
+
+        game.combat.combatants.forEach((c) => {
+            if(data[round][c._id]){
+                maxActions += data[round][c._id].maxActions;
+                actions += data[round][c._id].actions
+            }
+        });
+
+        return (maxActions - actions);
     }
 }

@@ -9,9 +9,12 @@
             <div id="fubh-turn-order" class="container green"></div>
             
             {{#if isGM}}
+            <div class="button green" data-tooltip="Rollback" data-action="previous-turn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
 
-            <div class="button green" data-tooltip="Next turn" data-action="next-turn">
-                <i class="fa-solid fa-angle-right"></i>
+            <div class="button green" data-tooltip="Switch turn" data-action="next-turn">
+                <i class="fa-solid fa-repeat"></i>
             </div>
 
             <div class="button green" data-tooltip="New round" data-action="new-round">

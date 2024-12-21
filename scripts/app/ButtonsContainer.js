@@ -29,6 +29,9 @@ export class ButtonsContainer {
     async genericListener(event){
         const action = event.currentTarget.dataset.action;
         switch (action) {
+            case "previous-turn":
+                await this.previousTurn();
+                break;
             case "next-turn":
                 await this.nextTurn();
                 break;
@@ -61,5 +64,9 @@ export class ButtonsContainer {
 
         await helper.updateTurnOrder(game.combat, isAlly);
         Hooks.call('fubhRefreshUI');
+    }
+
+    async previousTurn(){
+        await game.combat.previousTurn();
     }
 }
