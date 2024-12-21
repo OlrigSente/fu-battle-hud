@@ -22,6 +22,10 @@
     cursor: pointer;
 }
 
+#fu-battle-hud .yellow{
+    background: rgb(191,55,55);
+background: linear-gradient(45deg, rgba(191,55,55,1) 0%, rgba(221,127,44,1) 35%, rgba(228,202,68,1) 100%);
+}
 #fu-battle-hud .blue{
     background: rgb(43,62,122);
     background: linear-gradient(43deg, rgba(43,62,122,1) 33%, rgba(80,107,168,1) 100%);
@@ -49,7 +53,10 @@
     background: rgb(129,45,45);
     background: linear-gradient(43deg, rgba(129,45,45,1) 0%, rgba(180,174,172,1) 100%);
 }
-
+#fu-battle-hud .yellow:hover{
+    background: rgb(200,119,46);
+background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%, rgba(205,219,29,1) 100%);
+}
 #fu-battle-hud div.button, #fu-battle-hud div.container{
     border:2px white;
     border-style: ridge;
@@ -143,7 +150,6 @@
 #fubh-header {
     
     max-width: 80%;
-    height:150px;
     padding: 5px;
     background-image: url('/modules/fu-battle-hud/assets/background.png');
     background-color: rgb(57, 96, 105);
@@ -309,7 +315,7 @@
     text-shadow: #000000 1px 0 10px;
     text-align:center;
     color:white;
-    font-size:12px;
+    font-size:13px;
 
     position:relative;
     top:-16px;

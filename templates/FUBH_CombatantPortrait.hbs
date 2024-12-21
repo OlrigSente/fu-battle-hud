@@ -33,11 +33,11 @@
             {{#if isNPC}}
                 <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}{{else}}ally {{/if}}">
                     <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
-                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{/if}}</div>
+                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{else}}??/??{{/if}}</div>
                 </div>
                 <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
                     <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
-                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{/if}}</div>
+                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{else}}??/??{{/if}}</div>
                 </div>
                 <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
                     <div class="resource-ap{{#if isExhausted}} exhausted {{/if}}" style="width:{{actions.percent}}%;"></div>    
@@ -48,11 +48,11 @@
         {{#if isEnemy}}
             <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}{{else}}ally {{/if}}">
                 <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
-                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{/if}}</div>
+                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{else}}?? / ??{{/if}}</div>
             </div>
             <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
                 <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
-                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{/if}}</div>
+                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{else}}?? / ??{{/if}}</div>
             </div>
             <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
                 <div class="resource-ap{{#if isExhausted}} exhausted {{/if}}" style="width:{{actions.percent}}%;"></div>    

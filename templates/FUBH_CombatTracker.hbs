@@ -1,5 +1,5 @@
 <div id="fubh-combat-tracker">
-    <div id="fubh-header" class="hidden">
+    <div id="fubh-header" class="hidden" style="height:200px;">
         <div id="fubh-foes">
         </div>
     </div>
@@ -9,7 +9,7 @@
             <div id="fubh-turn-order" class="container green"></div>
             
             {{#if isGM}}
-            <div class="button green" data-tooltip="Rollback" data-action="previous-turn">
+            <div class="button yellow" data-tooltip="Rollback" data-action="previous-turn">
                 <i class="fa-solid fa-chevron-left"></i>
             </div>
 
@@ -17,7 +17,7 @@
                 <i class="fa-solid fa-repeat"></i>
             </div>
 
-            <div class="button green" data-tooltip="New round" data-action="new-round">
+            <div class="button yellow" data-tooltip="New round" data-action="new-round">
                 <i class="fa-solid fa-rotate-right"></i>
             </div>
 
