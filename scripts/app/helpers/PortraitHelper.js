@@ -10,6 +10,8 @@ export class PortraitHelper {
         actions:0
     };
 
+    static PREVENT_COMBAT_UPDATE = false;
+
     async registerPortrait(combat, name, action, maxActions){
         const flag = this.getPortraitsData(combat) || {};
 

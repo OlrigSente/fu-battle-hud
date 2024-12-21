@@ -151,9 +151,6 @@ export class Combatant {
             case "play-action":
                 await this.playAction();
                 break;
-            case "reset-actions":
-                await this.resetActions();
-                break;
             case "open-character-sheet":
                 this.openCharacterSheet();
                 break;
@@ -179,19 +176,6 @@ export class Combatant {
         this.actor.sheet.render(true);
     }
 
-    async resetActions(){
-        if(this.actions === this.maxActions)
-            return;
-
-        const turnTakenHelper = new CombatantsTurnTakenHelper();
-        const currentTurnhelper = new CurrentTurnHelper();
-        const portraitHelper = new PortraitHelper();
-
-        this.combat = await turnTakenHelper.removeAllTurnsForCombatant(this.combat, this.combatant);
-        this.combat = await currentTurnhelper.updateTurnOrder(this.combat, this.isAlly, true); // update with rollback
-        this.combat = await portraitHelper.resetActions(this.combat, this.combatant._id);
-    }
-
     async playAction(){
         if(this.isExhausted || !this.myTurn)
             return;
@@ -200,7 +184,9 @@ export class Combatant {
         const currentTurnhelper = new CurrentTurnHelper();
         const portraitHelper = new PortraitHelper();
 
+        PortraitHelper.PREVENT_COMBAT_UPDATE = true;
         this.combat = await turnTakenHelper.addTurn(this.combat, this.combatant);
+        PortraitHelper.PREVENT_COMBAT_UPDATE = false;
 
         if(!this.sideIsEmpty())
             this.combat = await currentTurnhelper.updateTurnOrder(this.combat, this.isAlly, false); // update with rollback

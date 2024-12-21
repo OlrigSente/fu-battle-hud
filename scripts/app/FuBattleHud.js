@@ -222,7 +222,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
   _onDeleteCombat(combat) {
   }
-  _onUpdateCombat(combat,data,turn) {
+  async _onUpdateCombat(combat,data) {
+    if(data.flags?.projectfu?.CombatantsTurnTaken && !PortraitHelper.PREVENT_COMBAT_UPDATE){
+      const portraitHelper = new PortraitHelper();
+      const turns = data.flags.projectfu.CombatantsTurnTaken[combat.round];
+      const combatant_id = turns[turns.length - 1];
+
+      await portraitHelper.removeAction(combat, combatant_id);
+    }
     this.updateRoundCounter();
   }
 
@@ -354,6 +361,10 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   getPortraitFromActor(actor) {
     return this.portraits.find((p) => p.combatant._id === actor._id);
+  }
+
+  getPortraitFromCombatantId(id) {
+    return this.portraits.find((p) => p.combatant._id === id);
   }
 
   getCombatantFromActor(actor) {

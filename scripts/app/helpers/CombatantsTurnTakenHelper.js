@@ -47,15 +47,6 @@ export class CombatantsTurnTakenHelper{
         return this.set(combat,data);
     }
 
-    async removeAllTurnsForCombatant(combat, combatant){
-        const data = this.get(combat) || {};
-        if(!data[combat.round])
-            data[combat.round] = [];
-
-        data[combat.round] = data[combat.round].filter((f) => f !== combatant._id);
-        return this.set(combat,data);
-    }
-
     getLastCombatant(combat){
         const round = combat.round;
         if(!round)
