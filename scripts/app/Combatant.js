@@ -95,7 +95,7 @@ export class Combatant {
     }
 
     get maxActions(){
-        if(this.isAlly)
+        if(!this.isNPC)
             return 1;
         return this.rank.replacedSoldiers;
     }
@@ -221,7 +221,7 @@ export class Combatant {
     get getModel(){
         const settingsHelper = new SettingsHelper();
 
-        return {
+        const model = {
             pid: this.pid,
             name: this.name,
             img: this.img,
@@ -254,11 +254,23 @@ export class Combatant {
                     percent: !this.isNPC ? this.getPercentValue(this.actor.system.resources.ip.value,this.actor.system.resources.ip.max) : 0,
                 },
             },
-            settings: {
-                enemyHpValueShow: settingsHelper.get(SettingsHelper.EnemyHpValueShow),
-                enemyHpBarShow: settingsHelper.get(SettingsHelper.EnemyHpBarShow),
-            }
+            settings: {}
         };
+
+        model.settings[SettingsHelper.EnemyHpValueShow] = settingsHelper.get(SettingsHelper.EnemyHpValueShow);
+        model.settings[SettingsHelper.EnemyHpBarShow] = settingsHelper.get(SettingsHelper.EnemyHpBarShow);
+
+        model.settings[SettingsHelper.EnemyMpValueShow] = settingsHelper.get(SettingsHelper.EnemyMpValueShow);
+        model.settings[SettingsHelper.EnemyMpBarShow] = settingsHelper.get(SettingsHelper.EnemyMpBarShow);
+        
+        let imgTopMargin = 0;
+        imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyHpBarShow)) ? 0 : 25;
+        imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyMpBarShow)) ? 0 : 25;
+
+        model.settings.imgTopMargin = imgTopMargin;
+        model.settings.portraitTopMargin = Math.round(imgTopMargin/2);
+
+        return model;
     }
 
     getPercentValue(value,max){

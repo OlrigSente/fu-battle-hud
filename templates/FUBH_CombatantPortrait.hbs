@@ -1,5 +1,8 @@
-<div class="portrait-wrapper">
-    <div class="eventListener portrait-img {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy {{else}}ally {{/if}}" style="background-image: url('{{img}}')"data-action="open-character-sheet">
+<div class="portrait-wrapper" style="{{#if isEnemy}}{{#if isNPC}}margin-top:-{{settings.portraitTopMargin}}px;{{/if}}{{/if}}">
+    <div class="eventListener portrait-img 
+        {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy {{else}}ally {{/if}}" 
+        style="background-image: url('{{img}}'); {{#if isEnemy}}{{#if isNPC}}margin-top:{{settings.imgTopMargin}}px;{{/if}}{{/if}}" 
+        data-action="open-character-sheet">
         <div class="portrait-img-overlay {{#if isExhausted}} exhausted {{/if}}"></div>
     </div>
     <div class="fubh-portrait-buttons {{#if isEnemy}}enemy{{else}}ally{{/if}}" style="visibility:{{#if isGM}}visible{{else}}hidden{{/if}}">
@@ -14,49 +17,66 @@
         </div>
     </div>
     <div class="portrait-name {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy{{else}}ally{{/if}}">{{name}}</div>
-    <div style="portrait-resources-wrapper">
+    <div class="portrait-resources-wrapper">
         {{#if isAlly}}
             {{#unless isNPC}}
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}{{else}}ally {{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
                     <div class="resource-bar-text">{{resources.hp.value}}/{{resources.hp.max}}</div>
                 </div>
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
                     <div class="resource-bar-text">{{resources.mp.value}}/{{resources.mp.max}}</div>
                 </div>
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-ip{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.ip.percent}}%;"></div>    
                     <div class="resource-bar-text">{{resources.ip.value}}/{{resources.ip.max}}</div>
                 </div>
             {{/unless}}
             {{#if isNPC}}
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}{{else}}ally {{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
                     <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{else}}??/??{{/if}}</div>
                 </div>
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
                     <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{else}}??/??{{/if}}</div>
                 </div>
-                <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
+                <div class="resource-bar resource-bar-container ally">
                     <div class="resource-ap{{#if isExhausted}} exhausted {{/if}}" style="width:{{actions.percent}}%;"></div>    
                     <div class="resource-bar-text">{{actions.value}}/{{actions.max}}</div>
                 </div>
             {{/if}}
         {{/if}}
         {{#if isEnemy}}
-            <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy {{#if settings.enemyHpBarShow}}display {{else}}hidden {{/if}}{{else}}ally {{/if}}">
-                <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
-                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{else}}?? / ??{{/if}}</div>
-            </div>
-            <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
-                <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
-                <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{else}}?? / ??{{/if}}</div>
-            </div>
-            <div class="resource-bar resource-bar-container {{#if isEnemy}}enemy{{else}}ally{{/if}}">
-                <div class="resource-ap{{#if isExhausted}} exhausted {{/if}}" style="width:{{actions.percent}}%;"></div>    
-                <div class="resource-bar-text">{{actions.value}}/{{actions.max}}</div>
+            {{#unless isNPC}}
+                <div class="resource-bar resource-bar-container enemy">
+                    <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
+                    <div class="resource-bar-text">{{resources.hp.value}}/{{resources.hp.max}}</div>
+                </div>
+                <div class="resource-bar resource-bar-container enemy">
+                    <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
+                    <div class="resource-bar-text">{{resources.mp.value}}/{{resources.mp.max}}</div>
+                </div>
+                <div class="resource-bar resource-bar-container enemy">
+                    <div class="resource-ip{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.ip.percent}}%;"></div>    
+                    <div class="resource-bar-text">{{resources.ip.value}}/{{resources.ip.max}}</div>
+                </div>
+            {{/unless}}
+            {{#if isNPC}}
+                <div class="resource-bar resource-bar-container enemy {{#if settings.enemyHpBarShow}} display {{else}} hidden {{/if}}">
+                    <div class="resource-hp {{#if isExhausted}}exhausted {{/if}}" style="width:{{resources.hp.percent}}%;"></div>
+                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.hp.value}}/{{resources.hp.max}}{{else}}??/??{{/if}}</div>
+                </div>
+                <div class="resource-bar resource-bar-container enemy {{#if settings.enemyMpBarShow}} display {{else}} hidden {{/if}}">
+                    <div class="resource-mp{{#if isExhausted}} exhausted {{/if}}" style="width:{{resources.mp.percent}}%;"></div>
+                    <div class="resource-bar-text">{{#if settings.enemyHpValueShow}}{{resources.mp.value}}/{{resources.mp.max}}{{else}}??/??{{/if}}</div>
+                </div>
+                <div class="resource-bar resource-bar-container enemy">
+                    <div class="resource-ap{{#if isExhausted}} exhausted {{/if}}" style="width:{{actions.percent}}%;"></div>    
+                    <div class="resource-bar-text">{{actions.value}}/{{actions.max}}</div>
+                </div>
+            {{/if}}
             </div>
         {{/if}}
     </div>

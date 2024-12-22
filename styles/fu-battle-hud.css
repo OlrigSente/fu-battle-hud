@@ -148,7 +148,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     Container for foes
 */
 #fubh-header {
-    
+    height:200px;
     max-width: 80%;
     padding: 5px;
     background-image: url('/modules/fu-battle-hud/assets/background.png');

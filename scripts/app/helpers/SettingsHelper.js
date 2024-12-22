@@ -3,8 +3,12 @@ import { PlaylistHelper } from "./PlaylistHelper.js";
 
 export class SettingsHelper{
 
+    // HP bar
     static EnemyHpValueShow = "enemyHpValueShow";
     static EnemyHpBarShow = "enemyHpBarShow";
+
+    static EnemyMpValueShow = "enemyMpValueShow";
+    static EnemyMpBarShow = "enemyMpBarShow";
 
     static PlaylistValue = "playlistValue";
 
@@ -15,6 +19,9 @@ export class SettingsHelper{
     registerSettings(){
         this.enemyPortrait_HpValueShow();
         this.enemyPortrait_HpBarShow();
+        
+        this.enemyPortrait_MpValueShow();
+        this.enemyPortrait_MpBarShow();
 
         this.playlist_Configure();
     }
@@ -30,6 +37,8 @@ export class SettingsHelper{
     /*
      * ENEMY SETTINGS
      */
+
+    // HP Bar
     enemyPortrait_HpValueShow(){
         game.settings.register(FubhConstants.MID, SettingsHelper.EnemyHpValueShow, {
             name: "Opponents - Show HP Value",
@@ -46,6 +55,31 @@ export class SettingsHelper{
         game.settings.register(FubhConstants.MID, SettingsHelper.EnemyHpBarShow, {
             name: "Opponents - Show HP Bar",
             hint: "To show or hide the opponents HP bar",
+            config: true,
+            scope: "world",
+            type: new foundry.data.fields.BooleanField(),
+            default: true,
+            requiresReload: true,
+        });
+    }
+
+    //MP Bar
+    enemyPortrait_MpValueShow(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.EnemyMpValueShow, {
+            name: "Opponents - Show MP Value",
+            hint: "To show or hide the MP amount on health bar for opponents",
+            config: true,
+            scope: "world",
+            type: new foundry.data.fields.BooleanField(),
+            default: true,
+            requiresReload: true,
+        });
+    }
+
+    enemyPortrait_MpBarShow(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.EnemyMpBarShow, {
+            name: "Opponents - Show MP Bar",
+            hint: "To show or hide the opponents MP bar",
             config: true,
             scope: "world",
             type: new foundry.data.fields.BooleanField(),

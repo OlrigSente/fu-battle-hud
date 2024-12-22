@@ -5,6 +5,7 @@ import { Combatant } from "./Combatant.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
 import { PortraitHelper } from "./helpers/PortraitHelper.js";
 import { CombatantsTurnTakenHelper } from "./helpers/CombatantsTurnTakenHelper.js";
+import { SettingsHelper } from "./helpers/SettingsHelper.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -210,8 +211,12 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* HOOKS EVENTS */
   _onHoverToken(token, hover) {
     const portrait = this.portraits.find((p) => p.combatant.tokenId === token.id);
-    if (!portrait) return;
-    portrait.element.classList.toggle("glow", hover);
+    if (!portrait) 
+      return;
+    
+    portrait.element.querySelector(".portrait-img").classList.toggle("glow", hover);
+    portrait.element.querySelector(".portrait-resources-wrapper").classList.toggle("glow", hover);
+    //portrait.element.classList.toggle("glow", hover);
   }
   async _onCombatStart(combat) {
     await game.combat.nextRound();
