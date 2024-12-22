@@ -76,6 +76,7 @@ export class PortraitHelper {
 
     async removeAction(combat, name){
         const data = this.getPortraitsData(combat);
+
         if(data[combat.round][name]){
             const value = data[combat.round][name].actions - 1;
             if(value >= 0){

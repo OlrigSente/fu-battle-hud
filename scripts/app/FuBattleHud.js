@@ -235,6 +235,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       game.combat.current.turn = 1;
   }
   _onDeleteCombat(combat) {}
+
   async _onUpdateCombat(combat,data) {
     if (!game.user.isGM)
       return;
@@ -246,6 +247,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       if(turns){
         const combatant_id = turns[turns.length - 1];
         await portraitHelper.removeAction(combat, combatant_id);
+        CombatantsTurnTakenHelper.rollback = combatant_id;
       }
     }
 
@@ -283,6 +285,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
         CombatantsTurnTakenHelper.rollback = await portraitHelper.rollbackLastAction(combat);
       }
     }
+    PortraitHelper.PREVENT_COMBAT_UPDATE = false;
     this.refreshUI();
   }
 

@@ -1,5 +1,6 @@
 import { FubhConstants as FubhConstants } from "./FubhConstants.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
+import { PortraitHelper } from "./helpers/PortraitHelper.js";
 
 export class ButtonsContainer {
     constructor() {
@@ -67,6 +68,7 @@ export class ButtonsContainer {
     }
 
     async previousTurn(){
+        PortraitHelper.PREVENT_COMBAT_UPDATE = true;
         await game.combat.previousTurn();
     }
 }

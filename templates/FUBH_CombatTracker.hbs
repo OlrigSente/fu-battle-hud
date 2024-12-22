@@ -6,25 +6,22 @@
     <div id="fubh-footer" class="hidden">
         <div id="fubh-buttons-container">
             <div id="fubh-round-counter" class="container blue"></div>
-            <div id="fubh-turn-order" class="container green"></div>
-            
             {{#if isGM}}
-            <div class="button yellow" data-tooltip="Rollback" data-action="previous-turn">
-                <i class="fa-solid fa-chevron-left"></i>
-            </div>
-
-            <div class="button green" data-tooltip="Switch turn" data-action="next-turn">
-                <i class="fa-solid fa-repeat"></i>
-            </div>
-
-            <div class="button yellow" data-tooltip="New round" data-action="new-round">
-                <i class="fa-solid fa-rotate-right"></i>
-            </div>
-
-            <div class="button red" data-tooltip="End combat" data-action="delete-combat">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
+                <div class="button yellow" data-tooltip="Rollback" data-action="previous-turn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+            {{/if}}
+            <div id="fubh-turn-order" class="container green"></div>
+            {{#if isGM}}
+                <div class="button green" data-tooltip="Switch turn" data-action="next-turn">
+                    <i class="fa-solid fa-repeat"></i>
+                </div>
+                <div class="button yellow" data-tooltip="New round" data-action="new-round">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </div>
+                <div class="button red" data-tooltip="End combat" data-action="delete-combat">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
             {{/if}}
         </div>
         <div id="fubh-allies"></div>
