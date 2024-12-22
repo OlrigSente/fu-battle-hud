@@ -11,7 +11,8 @@ export class Combatant {
         this.combat = this.combatant.combat;
         this.parent = parent;
         this.name = this.combatant.name;
-
+        this.damageTaken = 0;
+        this.playTextAnimation = false;
         this.pid = `${FubhConstants.MID}-${this.combatant._id}`;
         
         this.element = document.createElement("div");
@@ -32,12 +33,20 @@ export class Combatant {
         return this.combatant?.actor;
     }
 
+    get isOwner(){
+        return this.actor.isOwner;
+    }
+
     get token() {
         return this.combatant?.token?.object;
     }
 
     get img() {
         return (this.combatant.actor?.img) ?? this.combatant.img;
+    }
+
+    get floatingTextPanel(){
+        return this.element.querySelector(".floating-text");
     }
 
     get isExhausted() {
@@ -124,6 +133,28 @@ export class Combatant {
 
     get myOpponentTurn(){
         return !this.myTurn;
+    }
+
+    get damages(){
+        return {
+            amount: Math.abs(this.damageTaken),
+            isHealing: (this.damageTaken < 0),
+            playAnimation: this.playTextAnimation
+        }
+    }
+
+    /* ANIMATIONS */
+    async playDamageAnimation(dmg){
+        this.damageTaken = dmg;
+        this.floatingTextPanel.classList.toggle("fadeInUp-animation");
+        this.playTextAnimation = true;
+        this.element.classList.toggle("shake-animation", true);
+        await this.renderPortrait();
+        
+        setTimeout(async () => {
+            this.playTextAnimation = false;
+            this.element.classList.toggle("shake-animation", false);
+        }, 2500);
     }
 
     /* LISTENER & ACTIONS */
@@ -230,6 +261,7 @@ export class Combatant {
             isAlly: this.isAlly,
             isMyOpponentTurn: this.myOpponentTurn,
             isGM: this.isGM,
+            damages: this.damages,
             actions: {
                 value: this.actions,
                 max: this.maxActions,
@@ -262,7 +294,7 @@ export class Combatant {
 
         model.settings[SettingsHelper.EnemyMpValueShow] = settingsHelper.get(SettingsHelper.EnemyMpValueShow);
         model.settings[SettingsHelper.EnemyMpBarShow] = settingsHelper.get(SettingsHelper.EnemyMpBarShow);
-        
+
         let imgTopMargin = 0;
         imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyHpBarShow)) ? 0 : 25;
         imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyMpBarShow)) ? 0 : 25;

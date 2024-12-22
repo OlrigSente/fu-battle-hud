@@ -52,9 +52,8 @@ export class CombatantsTurnTakenHelper{
         if(!round)
             return;
 
-        const data = this.get(combat);
+        const data = this.get(combat) || {};
         let last = undefined;
-
 
         if(data[round])
             last = data[round][data[round].length - 1];

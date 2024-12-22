@@ -117,8 +117,7 @@ export class PortraitHelper {
             PortraitHelper.ROLLBACK.hasRollback = true;
             PortraitHelper.ROLLBACK.roundTarget = combat.round - 1;
         }
-            
-
+        
         await this.addAction(combat, CombatantsTurnTakenHelper.rollback, prevRound);
         return lastCombatant;
     }

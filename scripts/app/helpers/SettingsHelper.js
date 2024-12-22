@@ -19,7 +19,7 @@ export class SettingsHelper{
     registerSettings(){
         this.enemyPortrait_HpValueShow();
         this.enemyPortrait_HpBarShow();
-        
+
         this.enemyPortrait_MpValueShow();
         this.enemyPortrait_MpBarShow();
 

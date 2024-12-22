@@ -1,5 +1,6 @@
 // at start of foundry
 import { FuBattleHud } from './app/FuBattleHud.js';
+import { CombatantsTurnTakenHelper } from './app/helpers/CombatantsTurnTakenHelper.js';
 import { PlaylistHelper } from './app/helpers/PlaylistHelper.js';
 import { SettingsHelper } from './app/helpers/SettingsHelper.js';
 
@@ -21,13 +22,19 @@ Hooks.on("ready", async function() {
     if(game.combat?.active) {
         await app.render(true);
         app.setupCombatants(game.combat);
+        app.initTurnCount();
         app.initListener();
         app.autosize();
 
         if(game.combat.round > 0){
+            // memorize last turn played to be able to rollback when using the previous turn button
+            CombatantsTurnTakenHelper.rollback = new CombatantsTurnTakenHelper().getLastCombatant(game.combat);
+
             app.showCombatTracker();
             app.updateRoundCounter();
             playlist.play();
+        }else{
+            app.showCombatTracker(false);
         }
     }
 });
@@ -39,6 +46,8 @@ Hooks.on('createCombat', async (combat) => {
         app.initListener();
         app.renderPortraits();
         app.autosize();
+
+        app.showCombatTracker(false);
     }
 });
 

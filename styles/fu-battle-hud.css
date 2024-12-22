@@ -26,6 +26,7 @@
     background: rgb(191,55,55);
 background: linear-gradient(45deg, rgba(191,55,55,1) 0%, rgba(221,127,44,1) 35%, rgba(228,202,68,1) 100%);
 }
+
 #fu-battle-hud .blue{
     background: rgb(43,62,122);
     background: linear-gradient(43deg, rgba(43,62,122,1) 33%, rgba(80,107,168,1) 100%);
@@ -178,7 +179,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     Container for the allies and hotbar section
 */
 #fubh-footer {
-    min-width:300px;
+    min-width:400px;
     height:370px;
     
     align-self: center;
@@ -211,6 +212,71 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 /* 
  * Character Portrait
  */
+
+/* ANIMATIONS */
+.floating-text{
+    position:relative;
+    float:left;
+
+    width:100%; height:50%; margin-top:25%;
+    
+    text-shadow: #000000 2px 2px 2px;
+    font-size: 50px;
+    text-align: center;
+
+    z-index: 100;
+    opacity: 0;
+}
+
+.floating-text.text-red{
+    color: rgb(245, 64, 64);
+}
+
+.floating-text.text-green{
+    color: rgb(85, 245, 64);
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+  
+.shake-animation {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(80%);
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+  
+.fadeInUp-animation {
+    animation: 1.5s fadeInUp;
+}
 
 /* the base element */
 .fubh-portrait {
@@ -364,11 +430,13 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     justify-content: space-between;
 
     display:none;
+
+    z-index: 101;
 }
 
 .fubh-portrait-buttons.enemy{
     margin-left:15px;
-    margin-top:-2px;
+    margin-top:15px;
 }
 
 .fubh-portrait-buttons.ally{
@@ -376,10 +444,10 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 .fubh-portrait-buttons .button{
-    font-size: 16px;
-    line-height: 25px;
-    height:25px;
-    width:25px;
+    font-size: 30px;
+    line-height: 40px;
+    height:40px;
+    width:40px;
 
     border-radius: 5px !important;
 }
