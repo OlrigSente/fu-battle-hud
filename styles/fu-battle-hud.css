@@ -67,7 +67,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     color:white;
     text-shadow: #000000 1px 0 2px;
 
-    margin:5px;
+    margin:2px;
 }
 
 #fu-battle-hud .font-size{
@@ -153,8 +153,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     Container for foes
 */
 #fubh-header {
-    max-width: 80%;
-    
     background-image: url('/modules/fu-battle-hud/assets/background.png');
     background-color: rgb(57, 96, 105);
     background-size: cover;
@@ -211,7 +209,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     flex-direction: row;
     justify-content: space-evenly;
     
-    padding: 10px;
+    padding: 5px;
 }
 
 /* 
@@ -289,7 +287,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 .fubh-portrait {
-    width:150px;
     height: 100%;
 
     margin-left: 15px;
@@ -299,10 +296,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     position: relative;
 }
 
-#fubh-allies .fubh-portrait{
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
 /* the container wich is inside an fubh-portrait*/
 .portrait-wrapper {
     width: 100%;
@@ -320,8 +313,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     background-size: cover;
     background-position: top;
 
-    margin-top: 5px !important;
-
+    width:100%;
     flex-grow: 1;
 }
 
@@ -335,20 +327,12 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     border-color: burlywood !important; 
 }
 
-.portrait-img.enemy{
-    width:60%; margin:auto;
-}
-
-.portrait-img.ally{
-    width:100%;
-}
-
 /*contain all resources bar*/
 
 
 /* represent the box containing the resource bar*/
 .portrait-resources-wrapper{
-    height: 36%;
+    height: 45px;
     width:100%;
 }
 .resource-bar-container{
@@ -358,10 +342,10 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     background-image: url('/modules/fu-battle-hud/assets/bar-texture.png');
     background-size: cover;
     width:100%;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 }
 .resource-bar-container {
-    height:27%;
+    height:14px;
 }
 
 /* represent css shared by all resources bar*/
@@ -420,7 +404,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     justify-content: center;
     
     width:100%;
-    height: 13%;
+    height: 18px;
 }
 
 .portrait-name.ally{
@@ -444,10 +428,10 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 .fubh-portrait-buttons .button{
-    font-size: 30px;
-    line-height: 40px;
-    height:40px;
-    width:40px;
+    font-size: 20px;
+    line-height: 30px;
+    height:30px;
+    width:30px;
 
     border-radius: 5px !important;
 }
@@ -462,7 +446,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     height:50px;
     
     position: absolute;
-    margin-top:-30px;
+    margin-top:-24px;
 
     flex: 1;
     display: flex;
@@ -473,13 +457,13 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 #fubh-buttons-container .button, #fubh-buttons-container .container{
-    line-height: 28px;
-    height:30px;
+    line-height: 18px;
+    height:20px;
 }
 
 #fubh-round-counter {
-    width:35px !important;
-    font-size: 16px;
+    width:25px !important;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -488,7 +472,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 #fubh-buttons-container .button{
-    width:30px;
+    width:20px;
 }
 
 /*

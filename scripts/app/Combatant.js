@@ -1,7 +1,6 @@
 import { FubhConstants } from "./FubhConstants.js";
 import { CombatantsTurnTakenHelper } from "./helpers/CombatantsTurnTakenHelper.js";
 import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
-import { PlaylistHelper } from "./helpers/PlaylistHelper.js";
 import { PortraitHelper } from "./helpers/PortraitHelper.js";
 import { SettingsHelper } from "./helpers/SettingsHelper.js";
 
@@ -41,8 +40,17 @@ export class Combatant {
         return this.combatant?.token?.object;
     }
 
+    get tokenImg(){
+        return this.token.texture?.baseTexture?.resource?.src;
+    }
+
     get img() {
-        return (this.combatant.actor?.img) ?? this.combatant.img;
+        const settingsHelper = new SettingsHelper();
+
+        if(this.tokenImg && settingsHelper.get(SettingsHelper.PortraitUseTokenImage))
+            return this.tokenImg;
+        else
+            return (this.combatant.actor?.img) ?? this.combatant.img;
     }
 
     get floatingTextPanel(){
@@ -297,13 +305,11 @@ export class Combatant {
 
         model.settings[SettingsHelper.PortraitNameShow] = settingsHelper.get(SettingsHelper.PortraitNameShow);
 
-        let imgTopMargin = 0;
-        imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyHpBarShow)) ? 0 : 25;
-        imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyMpBarShow)) ? 0 : 25;
-
-        model.settings.imgTopMargin = imgTopMargin;
-        model.settings.portraitTopMargin = Math.round(imgTopMargin/2);
-
+        model.settings[SettingsHelper.Width] = settingsHelper.get(SettingsHelper.Width);
+        model.settings[SettingsHelper.HeightAllies] = settingsHelper.get(SettingsHelper.HeightAllies);
+        model.settings[SettingsHelper.HeightFoes] = settingsHelper.get(SettingsHelper.HeightFoes);
+        model.settings[SettingsHelper.FontSize] = settingsHelper.get(SettingsHelper.FontSize);
+        
         return model;
     }
 

@@ -6,6 +6,7 @@ import { CurrentTurnHelper } from "./helpers/CurrentTurnHelper.js";
 import { PortraitHelper } from "./helpers/PortraitHelper.js";
 import { CombatantsTurnTakenHelper } from "./helpers/CombatantsTurnTakenHelper.js";
 import { TurnCountHelper } from "./helpers/TurnCountHelper.js";
+import { SettingsHelper } from "./helpers/SettingsHelper.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -34,7 +35,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _preparePartContext(partId, context) {
-    return { isGM: game.user.isGM };
+    const settings = new SettingsHelper();
+    return { 
+      isGM: game.user.isGM, 
+      settings: {
+        HeightAllies: settings.get(SettingsHelper.HeightAllies), 
+        HeightFoes: settings.get(SettingsHelper.HeightFoes),
+      },
+    };
   }
 
   /*

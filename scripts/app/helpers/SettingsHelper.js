@@ -11,7 +11,14 @@ export class SettingsHelper{
     static EnemyMpBarShow = "enemyMpBarShow";
 
     static PortraitNameShow = "portraitNameShow";
+    static PortraitUseTokenImage = "portraitUseTokenImage";
+
     static PlaylistValue = "playlistValue";
+
+    static HeightAllies = "heightAllies";
+    static HeightFoes = "heightFoes";
+    static Width = "width";
+    static FontSize = "fontSize";
 
     constructor(){
 
@@ -25,6 +32,12 @@ export class SettingsHelper{
         this.enemyPortrait_MpBarShow();
 
         this.portrait_NameShow();
+        this.portrait_UseTokenImage();
+
+        this.hud_ConfigureHeightAllies();
+        this.hud_ConfigureHeightFoes();
+        this.hud_ConfigureWidthSize();
+        this.hud_ConfigureFontSize();
 
         this.playlist_Configure();
     }
@@ -38,12 +51,92 @@ export class SettingsHelper{
     }
 
     /*
+     * Responsiv
+     */
+
+    hud_ConfigureHeightAllies(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.HeightAllies, {
+            name: "HUD - Allies Height",
+            hint: "Height size of the HUD for Allies",
+            config: true,
+            scope: "client",
+            default: 180,
+            type: new foundry.data.fields.NumberField({
+                min:  120, max: 350, step: 5,
+                initial: 0, nullable: false
+              }),
+            requiresReload: true,
+        });
+    }
+
+    hud_ConfigureHeightFoes(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.HeightFoes, {
+            name: "HUD - Foes Height",
+            hint: "Height size of the HUD for Foes",
+            config: true,
+            scope: "client",
+            default: 150,
+            type: new foundry.data.fields.NumberField({
+                min: 110, max: 350, step: 5,
+                initial: 0, nullable: false
+              }),
+            requiresReload: true,
+        });
+    }
+
+    hud_ConfigureWidthSize(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.Width, {
+            name: "HUD - Width",
+            hint: "Width size of every portraits",
+            config: true,
+            scope: "client",
+            default: 150,
+            type: new foundry.data.fields.NumberField({
+                min: 100, max: 250, step: 5,
+                initial: 0, nullable: false
+              }),
+            requiresReload: true,
+        });
+    }
+
+    hud_ConfigureFontSize(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.FontSize, {
+            name: "HUD - Font Size",
+            hint: "To change the font size on every portraits",
+            config: true,
+            scope: "client",
+            default: 12,
+            type: new foundry.data.fields.NumberField({
+                min: 9, max: 15, step: 1,
+                initial: 0, nullable: false
+              }),
+            requiresReload: true,
+        });
+    }
+
+    /*
      * Portraits Settings
      */
     portrait_NameShow(){
         game.settings.register(FubhConstants.MID, SettingsHelper.PortraitNameShow, {
             name: "Portrait - Show name plate",
-            hint: "To show or hide the name on the portrait",
+            hint: "To show or hide the name on every portrait",
+            config: true,
+            scope: "client",
+            type: new foundry.data.fields.BooleanField(),
+            default: true,
+            requiresReload: false,
+            
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
+        });
+    }
+
+    portrait_UseTokenImage(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.PortraitUseTokenImage, {
+            name: "Portrait - Use Token Image",
+            hint: "To use the token's image instead of actor's if possible",
             config: true,
             scope: "client",
             type: new foundry.data.fields.BooleanField(),
@@ -125,7 +218,7 @@ export class SettingsHelper{
                     value = "nothing";
                 const helper = new PlaylistHelper();
                 helper.load(value);
-              }
+            }
         });
     }
 }
