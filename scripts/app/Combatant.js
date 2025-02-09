@@ -295,6 +295,8 @@ export class Combatant {
         model.settings[SettingsHelper.EnemyMpValueShow] = settingsHelper.get(SettingsHelper.EnemyMpValueShow);
         model.settings[SettingsHelper.EnemyMpBarShow] = settingsHelper.get(SettingsHelper.EnemyMpBarShow);
 
+        model.settings[SettingsHelper.PortraitNameShow] = settingsHelper.get(SettingsHelper.PortraitNameShow);
+
         let imgTopMargin = 0;
         imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyHpBarShow)) ? 0 : 25;
         imgTopMargin += (settingsHelper.get(SettingsHelper.EnemyMpBarShow)) ? 0 : 25;

@@ -70,6 +70,10 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     margin:5px;
 }
 
+#fu-battle-hud .font-size{
+    font-size: 12px;
+}
+
 /*
  * MAIN
  */
@@ -183,6 +187,14 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     pointer-events: all;
 }
 
+#fubh-allies {
+    height: 180px;
+}
+
+#fubh-foes {
+    height: 150px;
+}
+
 #fubh-footer #fubh-allies {
     box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
     
@@ -275,19 +287,31 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 #hotbar{
     margin: auto;
 }
+
 .fubh-portrait {
     width:150px;
-    height: 180px;
+    height: 100%;
 
-    margin:10px 15px 10px 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 0px;
+
     position: relative;
 }
 
+#fubh-allies .fubh-portrait{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 /* the container wich is inside an fubh-portrait*/
 .portrait-wrapper {
-    margin-top: 5px !important;
     width: 100%;
     height: 100%;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* old the img shown in portrait */
@@ -298,7 +322,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
     margin-top: 5px !important;
 
-    height: 50%;
+    flex-grow: 1;
 }
 
 .portrait-img.enemy:hover{
@@ -377,7 +401,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
     text-shadow: #000000 1px 0 10px;
     color: white;
-    font-size: 0.8em;
 }
 
 /* portrait name*/
@@ -386,14 +409,12 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     border-style: ridge;
     border-radius: 3px;
     margin-bottom: 2px;
+
     background-size: contain;
     background-color: rgb(59, 59, 59);
     background-image: url('/modules/fu-battle-hud/assets/bar-texture.png');
 
     color:aliceblue;
-
-    font-size: 12px;
-    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;

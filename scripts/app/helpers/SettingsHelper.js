@@ -10,6 +10,7 @@ export class SettingsHelper{
     static EnemyMpValueShow = "enemyMpValueShow";
     static EnemyMpBarShow = "enemyMpBarShow";
 
+    static PortraitNameShow = "portraitNameShow";
     static PlaylistValue = "playlistValue";
 
     constructor(){
@@ -23,6 +24,8 @@ export class SettingsHelper{
         this.enemyPortrait_MpValueShow();
         this.enemyPortrait_MpBarShow();
 
+        this.portrait_NameShow();
+
         this.playlist_Configure();
     }
 
@@ -32,6 +35,21 @@ export class SettingsHelper{
 
     set(name, value){
         return game.settings.set(FubhConstants.MID, name, value);
+    }
+
+    /*
+     * Portraits Settings
+     */
+    portrait_NameShow(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.PortraitNameShow, {
+            name: "Portrait - Show name plate",
+            hint: "To show or hide the name on the portrait",
+            config: true,
+            scope: "client",
+            type: new foundry.data.fields.BooleanField(),
+            default: true,
+            requiresReload: true,
+        });
     }
 
     /*
