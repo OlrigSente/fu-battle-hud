@@ -74,6 +74,10 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     font-size: 12px;
 }
 
+.fubh-ma-auto{
+    margin:auto;
+}
+
 /*
  * MAIN
  */
@@ -168,6 +172,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
 #fubh-header #fubh-foes {
     width:100%;
+    height: 100%;
 
     flex: 1;
     display: flex;
@@ -180,17 +185,9 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 */
 #fubh-footer {
     min-width:400px;
-    margin-bottom: 62px;
+    margin-bottom: 70px;
     align-self: center;
     pointer-events: all;
-}
-
-#fubh-allies {
-    height: 180px;
-}
-
-#fubh-foes {
-    height: 150px;
 }
 
 #fubh-footer #fubh-allies {
@@ -210,6 +207,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     justify-content: space-evenly;
     
     padding: 5px;
+    height: 100%;
 }
 
 /* 
@@ -282,13 +280,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 /* the base element */
-#hotbar{
-    margin: auto;
-}
-
 .fubh-portrait {
-    height: 100%;
-
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 0px;
@@ -298,8 +290,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
 /* the container wich is inside an fubh-portrait*/
 .portrait-wrapper {
-    width: 100%;
-    height: 100%;
     
     display: flex;
     justify-content: space-between;

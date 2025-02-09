@@ -304,6 +304,7 @@ export class Combatant {
         model.settings[SettingsHelper.EnemyMpBarShow] = settingsHelper.get(SettingsHelper.EnemyMpBarShow);
 
         model.settings[SettingsHelper.PortraitNameShow] = settingsHelper.get(SettingsHelper.PortraitNameShow);
+        model.settings[SettingsHelper.PortraitTooltipName] = settingsHelper.get(SettingsHelper.PortraitTooltipName);
 
         model.settings[SettingsHelper.Width] = settingsHelper.get(SettingsHelper.Width);
         model.settings[SettingsHelper.HeightAllies] = settingsHelper.get(SettingsHelper.HeightAllies);

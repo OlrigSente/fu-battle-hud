@@ -1,4 +1,7 @@
-<div class="portrait-wrapper" style="width:{{settings.width}}px;">
+<div class="portrait-wrapper" style="
+    width:{{settings.width}}px; 
+    height:{{#if isAlly}}{{settings.heightAllies}}{{else}}{{settings.heightFoes}}{{/if}}px;"
+    {{#if settings.PortraitTooltipName}} data-tooltip="{{name}}" {{/if}}>
     <div class="eventListener portrait-img 
         {{#if isExhausted}} exhausted {{/if}}{{#if isEnemy}}enemy {{else}}ally {{/if}}" 
         style="background-image: url('{{img}}');" 

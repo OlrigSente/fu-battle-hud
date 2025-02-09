@@ -11,9 +11,11 @@ export class SettingsHelper{
     static EnemyMpBarShow = "enemyMpBarShow";
 
     static PortraitNameShow = "portraitNameShow";
+    static PortraitTooltipName = "PortraitTooltipName";
     static PortraitUseTokenImage = "portraitUseTokenImage";
 
     static PlaylistValue = "playlistValue";
+    static MacroBarIsCenter = "macroBarIsCenter";
 
     static HeightAllies = "heightAllies";
     static HeightFoes = "heightFoes";
@@ -32,12 +34,14 @@ export class SettingsHelper{
         this.enemyPortrait_MpBarShow();
 
         this.portrait_NameShow();
+        this.portrait_TooltipName();
         this.portrait_UseTokenImage();
 
         this.hud_ConfigureHeightAllies();
         this.hud_ConfigureHeightFoes();
         this.hud_ConfigureWidthSize();
         this.hud_ConfigureFontSize();
+        this.hud_MacroBarIsCenter();
 
         this.playlist_Configure();
     }
@@ -65,7 +69,10 @@ export class SettingsHelper{
                 min:  120, max: 350, step: 5,
                 initial: 0, nullable: false
               }),
-            requiresReload: true,
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
         });
     }
 
@@ -80,7 +87,10 @@ export class SettingsHelper{
                 min: 110, max: 350, step: 5,
                 initial: 0, nullable: false
               }),
-            requiresReload: true,
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
         });
     }
 
@@ -94,8 +104,11 @@ export class SettingsHelper{
             type: new foundry.data.fields.NumberField({
                 min: 100, max: 250, step: 5,
                 initial: 0, nullable: false
-              }),
-            requiresReload: true,
+            }),
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
         });
     }
 
@@ -110,13 +123,46 @@ export class SettingsHelper{
                 min: 9, max: 15, step: 1,
                 initial: 0, nullable: false
               }),
-            requiresReload: true,
+              requiresReload: false,
+              onChange: value => {
+                  Hooks.call('fubhRefreshUI');
+              }
+        });
+    }
+
+    hud_MacroBarIsCenter(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.MacroBarIsCenter, {
+            name: "Foundry - Center Macro bar",
+            hint: "To center the foundry macro bar",
+            config: true,
+            scope: "client",
+            type: new foundry.data.fields.BooleanField(),
+            default: false,
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
         });
     }
 
     /*
      * Portraits Settings
      */
+    portrait_TooltipName(){
+        game.settings.register(FubhConstants.MID, SettingsHelper.PortraitTooltipName, {
+            name: "Portrait - Tooltip for nameplate",
+            hint: "Overing a portrait will show a tooltip with the character name",
+            config: true,
+            scope: "client",
+            type: new foundry.data.fields.BooleanField(),
+            default: false,
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
+        });
+    }
+
     portrait_NameShow(){
         game.settings.register(FubhConstants.MID, SettingsHelper.PortraitNameShow, {
             name: "Portrait - Show name plate",
@@ -126,7 +172,6 @@ export class SettingsHelper{
             type: new foundry.data.fields.BooleanField(),
             default: true,
             requiresReload: false,
-            
             onChange: value => {
                 Hooks.call('fubhRefreshUI');
             }
@@ -141,7 +186,10 @@ export class SettingsHelper{
             scope: "client",
             type: new foundry.data.fields.BooleanField(),
             default: true,
-            requiresReload: true,
+            requiresReload: false,
+            onChange: value => {
+                Hooks.call('fubhRefreshUI');
+            }
         });
     }
 

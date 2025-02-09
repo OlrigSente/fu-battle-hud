@@ -35,13 +35,8 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _preparePartContext(partId, context) {
-    const settings = new SettingsHelper();
     return { 
-      isGM: game.user.isGM, 
-      settings: {
-        HeightAllies: settings.get(SettingsHelper.HeightAllies), 
-        HeightFoes: settings.get(SettingsHelper.HeightFoes),
-      },
+      isGM: game.user.isGM,
     };
   }
 
@@ -187,6 +182,7 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   refreshUI(){
+    this.macrobarIsCenter();
     this.renderPortraits();
     this.updateRoundCounter();
   }
@@ -412,6 +408,14 @@ export class FuBattleHud extends HandlebarsApplicationMixin(ApplicationV2) {
       await this.getPortrait(combatant)?.update(combatant);
   }
 
+  macrobarIsCenter(){
+    const settings = new SettingsHelper();
+    const bar = document.getElementById("hotbar");
+    if(bar && settings.get(SettingsHelper.MacroBarIsCenter))
+      bar.classList.add("fubh-ma-auto");
+    else
+      bar.classList.remove("fubh-ma-auto");
+  }
   renderPortraits() {
     this.clearCombatantsUI();
     this.portraits.forEach(async (p) => await p.renderPortrait());
