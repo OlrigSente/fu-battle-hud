@@ -457,6 +457,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 #fubh-buttons-container .button, #fubh-buttons-container .container{
+    font-size:12px;
     line-height: 18px;
     height:20px;
 }
