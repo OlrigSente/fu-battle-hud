@@ -151,7 +151,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 #fubh-header {
     height:200px;
     max-width: 80%;
-    padding: 5px;
+    
     background-image: url('/modules/fu-battle-hud/assets/background.png');
     background-color: rgb(57, 96, 105);
     background-size: cover;
@@ -167,7 +167,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
 #fubh-header #fubh-foes {
     width:100%;
-    height:100%;
 
     flex: 1;
     display: flex;
@@ -180,8 +179,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 */
 #fubh-footer {
     min-width:400px;
-    height:370px;
-    
+    margin-bottom: 62px;
     align-self: center;
     pointer-events: all;
 }
@@ -198,10 +196,6 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     background-size: cover;
     background-position: center;
 
-    
-    height:300px;
-    
-    flex: 1;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -218,7 +212,7 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     position:relative;
     float:left;
 
-    width:100%; height:50%; margin-top:25%;
+    width:100%; height:50%;
     
     text-shadow: #000000 2px 2px 2px;
     font-size: 50px;
@@ -279,33 +273,33 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 /* the base element */
+#hotbar{
+    margin: auto;
+}
 .fubh-portrait {
     width:150px;
-    height:90%;
-    align-self: center;
-    margin:15px;
+    height: 180px;
+
+    margin:10px 15px 0px 15px;
+    position: relative;
 }
 
 /* the container wich is inside an fubh-portrait*/
 .portrait-wrapper {
-    width:100%; height: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    margin-top: 5px !important;
+    width: 100%;
+    height: 100%;
 }
 
 /* old the img shown in portrait */
 .portrait-img {
-    box-shadow: 5px 5px 8px 5px rgba(0,0,0,0.25);
-    height: 79%; 
     background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top;
 
-    border-left: 2px;
-    border-right: 2px;
-    border-top: 2px;
-    border-bottom: 0px;
-    border-style: ridge;
+    margin-top: 5px !important;
+
+    height: 50%;
 }
 
 .portrait-img.enemy:hover{
@@ -320,22 +314,20 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
 .portrait-img.enemy{
     width:60%; margin:auto;
-    background-size: 150px; 
-    background-position: center;
-    border-color: rgb(170, 89, 136);
 }
 
 .portrait-img.ally{
     width:100%;
-    background-size: 250px;
-    background-position: top;
-    border-color: rgb(170, 130, 89);
 }
 
 /*contain all resources bar*/
 
 
 /* represent the box containing the resource bar*/
+.portrait-resources-wrapper{
+    height: 36%;
+    width:100%;
+}
 .resource-bar-container{
     position:relative;
     border: 1px groove black;
@@ -345,11 +337,8 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
     width:100%;
     margin-bottom: 2px;
 }
-.resource-bar-container.ally {
-    height:18px;
-}
-.resource-bar-container.enemy {
-    height:18px;
+.resource-bar-container {
+    height:27%;
 }
 
 /* represent css shared by all resources bar*/
@@ -378,16 +367,18 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 }
 
 .resource-bar-text{
-    text-shadow: #000000 1px 0 10px;
-    text-align:center;
-    color:white;
-    font-size:13px;
-
-    position:relative;
-    top:-16px;
-    
+    position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-shadow: #000000 1px 0 10px;
+    color: white;
+    font-size: 0.8em;
 }
 
 /* portrait name*/
@@ -402,10 +393,14 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
     color:aliceblue;
 
-    text-align: center;
+    font-size: 12px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     width:100%;
+    height: 13%;
 }
 
 .portrait-name.ally{
@@ -423,24 +418,9 @@ background: linear-gradient(45deg, rgba(200,119,46,1) 0%, rgba(196,171,51,1) 35%
 
 .fubh-portrait-buttons{
     position: absolute;
-
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
     display:none;
-
     z-index: 101;
-}
-
-.fubh-portrait-buttons.enemy{
-    margin-left:15px;
-    margin-top:15px;
-}
-
-.fubh-portrait-buttons.ally{
-    margin-left:-20px;
+    top:0;
 }
 
 .fubh-portrait-buttons .button{
